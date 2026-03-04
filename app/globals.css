@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
+/* ─── Grupo IAN — Brand Tokens ─────────────────────────────── */
+@theme {
+  /* Colores de marca */
+  --color-ian-red:    #E00700;
+  --color-ian-blue:   #0092E1;
+  --color-ian-green:  #00B412;
+  --color-ian-orange: #FF6A1B;
+  --color-ian-yellow: #FFD700;
+  --color-ian-purple: #835DFF;
+  --color-ian-white:  #F5F5F5;
+  --color-ian-dark:   #1A1A2E;
+
+  /* Tipografía */
+  --font-poppins: var(--font-poppins);
+}
+
+/* ─── CSS Variables globales ────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ian-red:    #E00700;
+  --ian-blue:   #0092E1;
+  --ian-green:  #00B412;
+  --ian-yellow: #FFD700;
+  --ian-orange: #FF6A1B;
+  --ian-purple: #835DFF;
+  --ian-white:  #F5F5F5;
+  --ian-dark:   #1A1A2E;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base ──────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  background-color: #ffffff;
+  color: var(--ian-dark);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Animaciones de entrada ────────────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.04); }
+}
+
+@keyframes pulse-whatsapp {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
+  50%       { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out both;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+.animate-pulse-whatsapp {
+  animation: pulse-whatsapp 2s ease-in-out infinite;
+}
+
+/* Stagger delays para cards */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* ─── Visibilidad para Intersection Observer ────────────────── */
+.section-hidden {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.section-visible {
+  animation: fadeInUp 0.6s ease-out both;
 }
