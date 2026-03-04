@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Brain } from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Inicio',     href: '#inicio' },
@@ -52,7 +53,7 @@ export default function Navbar() {
             className="flex flex-col leading-none"
           >
             <span className="flex items-center gap-1.5 font-fredoka text-xl font-bold text-ian-dark">
-              <span className="text-2xl">🧠</span>
+              <Brain className="w-6 h-6 text-ian-purple" />
               <span>
                 GRUPO{' '}
                 <span className="text-ian-red">IAN</span>

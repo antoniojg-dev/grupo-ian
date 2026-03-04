@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { Rocket, MessageCircle } from 'lucide-react';
 
 const WA_URL =
   'https://wa.me/5255780724264?text=Hola%2C%20me%20interesa%20inscribir%20a%20mi%20hijo%20en%20Grupo%20IAN';
@@ -76,18 +77,18 @@ export default function CTAFinalSection() {
               href={WA_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white text-ian-red font-quicksand font-bold rounded-full px-8 py-4 transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02]"
+              className="inline-flex items-center gap-2 bg-white text-ian-red font-quicksand font-bold rounded-full px-8 py-4 transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02]"
             >
-              🚀 Inscribir a mi hijo ahora
+              <Rocket className="w-5 h-5" /> Inscribir a mi hijo ahora
             </a>
 
             <a
               href={WA_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="border-2 border-white text-white font-quicksand font-bold rounded-full px-8 py-4 transition-all duration-200 hover:bg-white hover:text-ian-red"
+              className="inline-flex items-center gap-2 border-2 border-white text-white font-quicksand font-bold rounded-full px-8 py-4 transition-all duration-200 hover:bg-white hover:text-ian-red"
             >
-              💬 Hablar por WhatsApp
+              <MessageCircle className="w-5 h-5" /> Hablar por WhatsApp
             </a>
           </div>
 

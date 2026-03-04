@@ -1,14 +1,15 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { Clock, Globe, BookOpen, Brain, Shield, Sprout } from 'lucide-react';
 
 const cards = [
-  { emoji: '🕐', title: 'Horarios Flexibles',    iconBg: 'bg-ian-blue',   shadowColor: 'rgba(0, 146, 225, 0.06)',  desc: 'Entrada desde las 7:00 AM. Adaptamos el horario a tu familia.'                              },
-  { emoji: '🌎', title: 'Escuela Bilingüe',      iconBg: 'bg-ian-red',    shadowColor: 'rgba(224, 7, 0, 0.06)',    desc: 'Inglés integrado desde Kinder. Nuestros alumnos piensan en dos idiomas.'                   },
-  { emoji: '📚', title: 'Regularización',        iconBg: 'bg-ian-green',  shadowColor: 'rgba(0, 180, 18, 0.06)',   desc: 'Reforzamos matemáticas, español, historia e inglés para que tu hijo brille.'               },
-  { emoji: '🧠', title: 'Educación Integral',    iconBg: 'bg-ian-purple', shadowColor: 'rgba(131, 93, 255, 0.06)', desc: 'Método High Scope + estimulación temprana + juego y aprendo.'                             },
-  { emoji: '🛡️', title: 'Ambiente Seguro',      iconBg: 'bg-ian-orange', shadowColor: 'rgba(255, 106, 27, 0.06)', desc: 'Instalaciones supervisadas y comunicación constante con los padres.'                       },
-  { emoji: '🌱', title: 'Estimulación Temprana', iconBg: 'bg-ian-green',  shadowColor: 'rgba(0, 180, 18, 0.06)',   desc: 'Actividades diseñadas para potenciar el desarrollo cognitivo, motor y emocional desde los primeros años.' },
+  { icon: <Clock    className="w-7 h-7 text-white" />, title: 'Horarios Flexibles',    iconBg: 'bg-ian-blue',   shadowColor: 'rgba(0, 146, 225, 0.06)',  desc: 'Entrada desde las 7:00 AM. Adaptamos el horario a tu familia.'                              },
+  { icon: <Globe    className="w-7 h-7 text-white" />, title: 'Escuela Bilingüe',      iconBg: 'bg-ian-red',    shadowColor: 'rgba(224, 7, 0, 0.06)',    desc: 'Inglés integrado desde Kinder. Nuestros alumnos piensan en dos idiomas.'                   },
+  { icon: <BookOpen className="w-7 h-7 text-white" />, title: 'Regularización',        iconBg: 'bg-ian-green',  shadowColor: 'rgba(0, 180, 18, 0.06)',   desc: 'Reforzamos matemáticas, español, historia e inglés para que tu hijo brille.'               },
+  { icon: <Brain    className="w-7 h-7 text-white" />, title: 'Educación Integral',    iconBg: 'bg-ian-purple', shadowColor: 'rgba(131, 93, 255, 0.06)', desc: 'Método High Scope + estimulación temprana + juego y aprendo.'                             },
+  { icon: <Shield   className="w-7 h-7 text-white" />, title: 'Ambiente Seguro',       iconBg: 'bg-ian-orange', shadowColor: 'rgba(255, 106, 27, 0.06)', desc: 'Instalaciones supervisadas y comunicación constante con los padres.'                       },
+  { icon: <Sprout   className="w-7 h-7 text-white" />, title: 'Estimulación Temprana', iconBg: 'bg-ian-green',  shadowColor: 'rgba(0, 180, 18, 0.06)',   desc: 'Actividades diseñadas para potenciar el desarrollo cognitivo, motor y emocional desde los primeros años.' },
 ];
 
 const CARD_DELAYS = ['delay-100', 'delay-200', 'delay-300', 'delay-100', 'delay-200', 'delay-300'];
@@ -75,8 +76,8 @@ export default function WhyIANSection() {
                 (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 24px ${card.shadowColor}`;
               }}
             >
-              <div className={`w-14 h-14 ${card.iconBg} rounded-2xl flex items-center justify-center text-2xl mb-4`}>
-                {card.emoji}
+              <div className={`w-14 h-14 ${card.iconBg} rounded-2xl flex items-center justify-center mb-4`}>
+                {card.icon}
               </div>
               <h3 className="font-fredoka font-bold text-ian-dark text-lg mb-2">{card.title}</h3>
               <p className="text-gray-500 text-sm leading-relaxed">{card.desc}</p>

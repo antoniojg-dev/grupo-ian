@@ -1,5 +1,7 @@
 'use client';
 
+import { Brain, MapPin, Phone, Clock, MessageCircle, Heart } from 'lucide-react';
+
 const WA_URL =
   'https://wa.me/5255780724264?text=Hola%2C%20me%20interesa%20inscribir%20a%20mi%20hijo%20en%20Grupo%20IAN';
 
@@ -36,8 +38,8 @@ export default function Footer() {
 
           {/* COL 1 — Marca */}
           <div className="pb-6 sm:pb-0 sm:pr-6">
-            <p className="font-bold text-xl">
-              🧠 GRUPO <span className="text-ian-red">IAN</span>
+            <p className="flex items-center gap-2 font-bold text-xl">
+              <Brain className="w-5 h-5 text-ian-purple" /> GRUPO <span className="text-ian-red">IAN</span>
             </p>
             <p className="text-white/50 text-sm mt-1">El Futuro Es Hoy</p>
             <p className="text-white/60 text-sm mt-3 leading-relaxed">
@@ -125,17 +127,17 @@ export default function Footer() {
             </p>
             <ul className="space-y-3">
               <li className="flex gap-2 text-white/70 text-sm">
-                <span>📍</span>
+                <MapPin className="w-4 h-4 shrink-0 mt-0.5 text-white/50" />
                 <span>
                   Cerro Acasulco #42, Oxtopulco Universidad, Coyoacán, CDMX
                 </span>
               </li>
               <li className="flex gap-2 text-white/70 text-sm">
-                <span>📱</span>
+                <Phone className="w-4 h-4 shrink-0 mt-0.5 text-white/50" />
                 <span>55 7807 2426</span>
               </li>
               <li className="flex gap-2 text-white/70 text-sm">
-                <span>🕐</span>
+                <Clock className="w-4 h-4 shrink-0 mt-0.5 text-white/50" />
                 <span>7:00 – 19:00 hrs</span>
               </li>
             </ul>
@@ -144,9 +146,9 @@ export default function Footer() {
               href={WA_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block mt-4 bg-[#25D366] text-white rounded-full px-4 py-2 text-sm font-semibold hover:brightness-110 transition-all duration-200"
+              className="inline-flex items-center gap-2 mt-4 bg-[#25D366] text-white rounded-full px-4 py-2 text-sm font-semibold hover:brightness-110 transition-all duration-200"
             >
-              💬 Escríbenos por WhatsApp
+              <MessageCircle className="w-4 h-4" /> Escríbenos por WhatsApp
             </a>
           </div>
 
@@ -154,7 +156,7 @@ export default function Footer() {
 
         {/* Separador */}
         <div className="border-t border-white/5 mt-12 pt-8 flex justify-between flex-wrap gap-2 text-white/40 text-xs">
-          <span>© 2025 GRUPO IAN — Hecho con ❤️ para los niños</span>
+          <span className="flex items-center gap-1">© 2025 GRUPO IAN — Hecho con <Heart className="w-3 h-3 text-ian-red fill-ian-red" /> para los niños</span>
           <button className="hover:text-white/70 transition-colors duration-200 cursor-pointer">
             Aviso de Privacidad
           </button>

@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { GraduationCap, BookOpen, Globe, Waves, CheckCircle2 } from 'lucide-react';
 
 const TABS = [
-  { label: '🎓 Kinder & Primaria', short: 'Kinder & Primaria' },
-  { label: '📚 Regularización',    short: 'Regularización'    },
-  { label: '🌎 Inglés',            short: 'Inglés'            },
-  { label: '🏊 Natación',          short: 'Natación'          },
+  { icon: <GraduationCap className="w-4 h-4 shrink-0" />, label: 'Kinder & Primaria', short: 'Kinder & Primaria' },
+  { icon: <BookOpen      className="w-4 h-4 shrink-0" />, label: 'Regularización',    short: 'Regularización'    },
+  { icon: <Globe         className="w-4 h-4 shrink-0" />, label: 'Inglés',            short: 'Inglés'            },
+  { icon: <Waves         className="w-4 h-4 shrink-0" />, label: 'Natación',          short: 'Natación'          },
 ];
 
 
@@ -133,12 +134,13 @@ export default function ServicesSection() {
             <button
               key={tab.short}
               onClick={() => setActiveTab(i)}
-              className={`text-sm text-center py-2.5 px-4 rounded-full font-medium transition-all duration-200 md:whitespace-nowrap ${
+              className={`inline-flex items-center justify-center gap-2 text-sm text-center py-2.5 px-4 rounded-full font-medium transition-all duration-200 md:whitespace-nowrap ${
                 activeTab === i
                   ? 'bg-ian-red text-white shadow-lg shadow-red-200'
                   : 'bg-gray-100 text-gray-600 hover:text-ian-dark'
               }`}
             >
+              {tab.icon}
               {tab.label}
             </button>
           ))}
@@ -157,7 +159,7 @@ export default function ServicesSection() {
             <ul className="flex flex-col gap-3">
               {tab.checks.map((check) => (
                 <li key={check} className="flex items-start gap-2">
-                  <span className="mt-0.5 shrink-0 text-ian-green font-bold text-sm leading-none">✓</span>
+                  <CheckCircle2 className="mt-0.5 w-4 h-4 shrink-0 text-ian-green" />
                   <span className="text-gray-600 text-sm">{check}</span>
                 </li>
               ))}

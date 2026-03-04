@@ -2,11 +2,12 @@
 
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
+import { GraduationCap, Shield, Clock, Star, Waves } from 'lucide-react';
 
 const TRUST_BADGES = [
-  { text: '🎓 Maestros Certificados', bg: 'bg-blue-50',   color: 'text-blue-600'   },
-  { text: '🛡️ Ambiente Seguro',       bg: 'bg-green-50',  color: 'text-green-600'  },
-  { text: '🕐 Horarios Flexibles',    bg: 'bg-orange-50', color: 'text-orange-600' },
+  { icon: <GraduationCap className="w-4 h-4" />, label: 'Maestros Certificados', bg: 'bg-blue-50',   color: 'text-blue-600'   },
+  { icon: <Shield       className="w-4 h-4" />, label: 'Ambiente Seguro',       bg: 'bg-green-50',  color: 'text-green-600'  },
+  { icon: <Clock        className="w-4 h-4" />, label: 'Horarios Flexibles',    bg: 'bg-orange-50', color: 'text-orange-600' },
 ];
 
 const WA_HREF =
@@ -92,7 +93,7 @@ export default function HeroSection() {
             {/* Badge */}
             <div ref={badgeRef} className="section-hidden self-start">
               <span className="animate-pulse-soft inline-flex items-center gap-1.5 rounded-full border border-dashed border-green-200 bg-[#DCFCE7] px-4 py-1.5 text-sm font-medium text-green-700">
-                🌟 ¡Inscripciones Abiertas 2025!
+                <Star className="w-4 h-4" /> ¡Inscripciones Abiertas 2025!
               </span>
             </div>
 
@@ -136,10 +137,11 @@ export default function HeroSection() {
             <div ref={trustRef} className="section-hidden delay-300 flex flex-wrap gap-3">
               {TRUST_BADGES.map((badge) => (
                 <span
-                  key={badge.text}
-                  className={`rounded-full ${badge.bg} ${badge.color} px-3 py-1 text-sm font-medium`}
+                  key={badge.label}
+                  className={`inline-flex items-center gap-1.5 rounded-full ${badge.bg} ${badge.color} px-3 py-1 text-sm font-medium`}
                 >
-                  {badge.text}
+                  {badge.icon}
+                  {badge.label}
                 </span>
               ))}
             </div>
@@ -212,8 +214,8 @@ export default function HeroSection() {
 
               {/* Mini badge flotante — natación */}
               <div className="absolute bottom-4 -left-4 z-20 bg-white rounded-2xl shadow-lg px-3 py-2 flex items-center gap-2">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-base shrink-0">
-                  🏊
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                  <Waves className="w-4 h-4 text-blue-500" />
                 </div>
                 <div>
                   <span className="text-xs font-bold block text-ian-dark">INCLUYE</span>

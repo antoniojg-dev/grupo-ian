@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { Sprout, Brain, Leaf, Lightbulb } from 'lucide-react';
 
 type Paquete = {
   accentColor: string;
-  emoji: string;
+  icon: React.ReactNode;
   nombre: string;
   tagline: string;
   horas: string;
@@ -17,7 +18,7 @@ type Paquete = {
 const PAQUETES: Paquete[] = [
   {
     accentColor: '#E00700',
-    emoji: '🌱',
+    icon: <Sprout className="w-8 h-8" style={{ color: '#E00700' }} />,
     nombre: 'Siembra',
     tagline: 'El primer paso hacia el futuro',
     horas: '2 hrs / semana',
@@ -28,7 +29,7 @@ const PAQUETES: Paquete[] = [
   },
   {
     accentColor: '#FF6A1B',
-    emoji: '🧠',
+    icon: <Brain className="w-8 h-8" style={{ color: '#FF6A1B' }} />,
     nombre: 'Crece',
     tagline: 'Más horas, más avance',
     horas: '5 hrs / semana',
@@ -39,7 +40,7 @@ const PAQUETES: Paquete[] = [
   },
   {
     accentColor: '#835DFF',
-    emoji: '🌿',
+    icon: <Leaf className="w-8 h-8" style={{ color: '#835DFF' }} />,
     nombre: 'Florece',
     tagline: 'Máximo potencial',
     horas: '7 hrs / semana',
@@ -115,10 +116,9 @@ export default function PaquetesSection() {
         </div>
 
         {/* Nota inferior */}
-        <p className="text-gray-400 text-sm mt-12 text-center">
-          💡 Todos los paquetes incluyen acceso a la alberca de ACTIVE CLUB Universidad.
-          <br className="hidden sm:block" />
-          Recibes recibo PDF por cada pago. Precios en MXN. Ciclo mensual.
+        <p className="flex flex-col items-center gap-1 text-gray-400 text-sm mt-12 text-center">
+          <span className="flex items-center gap-1.5"><Lightbulb className="w-4 h-4 text-ian-orange" /> Todos los paquetes incluyen acceso a la alberca de ACTIVE CLUB Universidad.</span>
+          <span>Recibes recibo PDF por cada pago. Precios en MXN. Ciclo mensual.</span>
         </p>
 
       </div>
@@ -160,12 +160,12 @@ const PaqueteCard = forwardRef<
         </span>
       )}
 
-      {/* Emoji */}
+      {/* Ícono */}
       <div
-        className="w-16 h-16 rounded-full flex items-center justify-center text-4xl"
+        className="w-16 h-16 rounded-full flex items-center justify-center"
         style={{ backgroundColor: `${p.accentColor}26` }}
       >
-        {p.emoji}
+        {p.icon}
       </div>
 
       {/* Nombre */}
