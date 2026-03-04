@@ -1,5 +1,7 @@
 import Navbar from '@/components/landing/Navbar';
 import HeroSection from '@/components/landing/HeroSection';
+import StatsBar from '@/components/landing/StatsBar';
+import WhyIANSection from '@/components/landing/WhyIANSection';
 
 export default function Home() {
   return (
@@ -7,6 +9,8 @@ export default function Home() {
       <Navbar />
       <main>
         <HeroSection />
+        <StatsBar />
+        <WhyIANSection />
       </main>
     </>
   );

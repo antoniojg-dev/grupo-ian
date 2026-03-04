@@ -49,7 +49,7 @@ export default function HeroSection() {
   return (
     <section
       id="inicio"
-      className="relative overflow-hidden bg-gradient-to-br from-white to-blue-50/30 pt-24 pb-16"
+      className="relative overflow-hidden bg-gradient-to-br from-white to-blue-50/30 pt-24 pb-0"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">

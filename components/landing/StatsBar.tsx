@@ -59,7 +59,7 @@ function StatItem({
       <span className={`text-5xl md:text-6xl font-bold ${color}`}>
         {count}{suffix}
       </span>
-      <span className="text-white/70 text-sm md:text-base mt-1 text-center">
+      <span className="text-white/80 text-sm md:text-base mt-1 text-center">
         {label}
       </span>
     </div>
@@ -90,30 +90,19 @@ export default function StatsBar() {
   }, []);
 
   return (
-    <div>
-      {/* Wave: blanco → oscuro */}
-      <svg viewBox="0 0 1440 60" className="w-full -mb-1 block" aria-hidden="true">
-        <path fill="#1A1A2E" d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" />
-      </svg>
-
-      <section
-        ref={sectionRef}
-        className="bg-ian-dark py-16 px-6"
-        aria-label="Estadísticas Grupo IAN"
-      >
-        <div className="mx-auto max-w-4xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
-            {stats.map((stat) => (
-              <StatItem key={stat.label} {...stat} triggered={triggered} />
-            ))}
-          </div>
+    <section
+      ref={sectionRef}
+      className="bg-ian-dark py-20 px-6 text-white"
+      style={{ clipPath: 'polygon(0 4%, 100% 0%, 100% 96%, 0% 100%)' }}
+      aria-label="Estadísticas Grupo IAN"
+    >
+      <div className="mx-auto max-w-4xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10 text-white">
+          {stats.map((stat) => (
+            <StatItem key={stat.label} {...stat} triggered={triggered} />
+          ))}
         </div>
-      </section>
-
-      {/* Wave: oscuro → blanco */}
-      <svg viewBox="0 0 1440 60" className="w-full -mt-1 block" aria-hidden="true">
-        <path fill="#ffffff" d="M0,30 C360,0 1080,60 1440,30 L1440,0 L0,0 Z" />
-      </svg>
-    </div>
+      </div>
+    </section>
   );
 }
