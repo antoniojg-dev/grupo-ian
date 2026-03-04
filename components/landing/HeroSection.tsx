@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GraduationCap, Shield, Clock, Star, Waves } from 'lucide-react';
 
 const TRUST_BADGES = [
@@ -13,7 +13,22 @@ const TRUST_BADGES = [
 const WA_HREF =
   'https://wa.me/5255780724264?text=Hola%2C%20me%20interesa%20inscribir%20a%20mi%20hijo%20en%20Grupo%20IAN';
 
+const VIDEO_SRC = 'https://www.youtube.com/embed/OEKBpboNyGE?autoplay=1';
+
 export default function HeroSection() {
+  const [videoOpen, setVideoOpen] = useState(false);
+  const [iframeSrc, setIframeSrc] = useState('');
+
+  const openVideo = () => {
+    setIframeSrc(VIDEO_SRC);
+    setVideoOpen(true);
+  };
+
+  const closeVideo = () => {
+    setIframeSrc('');
+    setVideoOpen(false);
+  };
+
   const badgeRef    = useRef<HTMLDivElement>(null);
   const h1Ref       = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -157,12 +172,12 @@ export default function HeroSection() {
                 >
                   Inscribe a tu hijo →
                 </a>
-                <a
-                  href="#paquetes"
-                  className="inline-flex items-center rounded-full border-2 border-ian-blue px-6 py-3 font-quicksand font-semibold text-ian-blue transition-all duration-200 hover:bg-ian-blue hover:text-white"
+                <button
+                  onClick={openVideo}
+                  className="inline-flex items-center rounded-full border-2 border-ian-dark px-6 py-3 font-quicksand font-semibold text-ian-dark transition-all duration-200 hover:bg-ian-dark hover:text-white"
                 >
-                  Ver paquetes
-                </a>
+                  ▶ Ver video
+                </button>
               </div>
 
               {/* Social proof */}
@@ -196,19 +211,19 @@ export default function HeroSection() {
                 height: '90%',
                 top: '5%',
                 left: '5%',
-                background: '#FFF3B0',
-                borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+                background: '#E8F4FD',
+                borderRadius: '60% 40% 70% 30% / 50% 60% 40% 50%',
               }}
             />
 
             {/* Imagen */}
             <div className="relative z-10 w-full">
               <Image
-                src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800"
+                src="/images/hero.webp"
                 alt="Niños aprendiendo en Grupo IAN"
                 width={800}
                 height={600}
-                className="h-auto w-full rounded-3xl object-cover shadow-xl"
+                className="relative z-10 h-auto w-full rounded-3xl object-cover"
                 priority
               />
 
@@ -227,6 +242,37 @@ export default function HeroSection() {
 
         </div>
       </div>
+
+      {/* ── Video Modal ─────────────────────────────────────────── */}
+      {videoOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 flex items-start justify-center"
+          onClick={closeVideo}
+        >
+          <div
+            className="relative max-w-3xl w-full mx-4 mt-20 rounded-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={closeVideo}
+              className="absolute top-3 right-3 z-10 bg-white/20 hover:bg-white/40 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold transition"
+              aria-label="Cerrar video"
+            >
+              ✕
+            </button>
+            <div className="w-full" style={{ aspectRatio: '16/9' }}>
+              <iframe
+                src={iframeSrc}
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+                width="100%"
+                height="100%"
+                style={{ display: 'block', width: '100%', height: '100%' }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

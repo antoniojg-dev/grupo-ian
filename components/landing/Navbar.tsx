@@ -6,7 +6,7 @@ import { Brain } from 'lucide-react';
 const NAV_LINKS = [
   { label: 'Inicio',     href: '#inicio' },
   { label: 'Nosotros',   href: '#nosotros' },
-  { label: 'Servicios',  href: '#servicios' },
+  { label: 'Servicios',  href: '#kinder' },
   { label: 'Paquetes',   href: '#paquetes' },
   { label: 'Galería',    href: '#galeria' },
   { label: 'Contacto',   href: '#contacto' },

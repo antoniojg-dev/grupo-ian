@@ -2,13 +2,12 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { GraduationCap, BookOpen, Globe, Waves, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Globe, Waves, CheckCircle2 } from 'lucide-react';
 
 const TABS = [
-  { icon: <GraduationCap className="w-4 h-4 shrink-0" />, label: 'Kinder & Primaria', short: 'Kinder & Primaria' },
-  { icon: <BookOpen      className="w-4 h-4 shrink-0" />, label: 'Regularización',    short: 'Regularización'    },
-  { icon: <Globe         className="w-4 h-4 shrink-0" />, label: 'Inglés',            short: 'Inglés'            },
-  { icon: <Waves         className="w-4 h-4 shrink-0" />, label: 'Natación',          short: 'Natación'          },
+  { icon: <BookOpen      className="w-4 h-4 shrink-0" />, label: 'Regularización', short: 'Regularización'    },
+  { icon: <Globe         className="w-4 h-4 shrink-0" />, label: 'Inglés',         short: 'Inglés'            },
+  { icon: <Waves         className="w-4 h-4 shrink-0" />, label: 'Natación',       short: 'Natación'          },
 ];
 
 
@@ -30,25 +29,6 @@ type TabData = {
 };
 
 const TAB_DATA: TabData[] = [
-  {
-    headline: 'Educación bilingüe completa desde los 3 años',
-    desc: 'Nuestro programa incluye todo lo que tu hijo necesita para destacar. Método High Scope, estimulación temprana, matemáticas, español, historia, ciencias y mucho más.',
-    checks: [
-      'Clases de inglés integradas (no extracurricular)',
-      'Estimulación temprana y juego educativo',
-      'Método High Scope internacional',
-      'Maestros certificados con experiencia',
-      'Grupos pequeños, atención personalizada',
-      'Modalidad virtual, presencial o mixta',
-    ],
-    price: 'Inscripción $4,000 · Colegiatura $5,000/mes',
-    priceLabel: 'mensualidad escolar',
-    ctaLabel: 'Inscribir ahora →',
-    ctaHref: '#paquetes',
-    ctaColor: 'bg-ian-red hover:bg-red-700',
-    image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&q=80',
-    imageAlt: 'Niños en clase de Kinder y Primaria',
-  },
   {
     headline: 'Tu hijo puede mejorar sus calificaciones',
     desc: 'Clases de apoyo en inglés, español, matemáticas e historia. Maestros especializados que crean un plan personalizado para cada niño.',
