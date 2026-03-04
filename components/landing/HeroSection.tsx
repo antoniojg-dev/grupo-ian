@@ -101,7 +101,7 @@ export default function HeroSection() {
               ref={h1Ref}
               className="section-hidden delay-100 text-4xl font-bold leading-tight tracking-tight text-ian-dark md:text-6xl"
             >
-              Come{' '}
+              Ven {' '}
               <span className="relative inline-block">
                 <span className="text-ian-red">aprende,</span>
                 <svg
