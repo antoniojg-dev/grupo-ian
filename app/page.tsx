@@ -4,6 +4,7 @@ import StatsBar from '@/components/landing/StatsBar';
 import WhyIANSection from '@/components/landing/WhyIANSection';
 import ServicesSection from '@/components/landing/ServicesSection';
 import PaquetesSection from '@/components/landing/PaquetesSection';
+import FAQSection from '@/components/landing/FAQSection';
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
         <WhyIANSection />
         <ServicesSection />
         <PaquetesSection />
+        <FAQSection />
       </main>
     </>
   );
