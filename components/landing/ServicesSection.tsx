@@ -10,7 +10,6 @@ const TABS = [
   { label: '🏊 Natación',          short: 'Natación'          },
 ];
 
-const CHECK_EMOJIS = ['🟡', '🔵', '🔴', '🟢', '🟡', '🔵'];
 
 const WA_INGLES =
   'https://wa.me/5255780724264?text=Hola%2C%20me%20interesa%20informaci%C3%B3n%20sobre%20las%20clases%20de%20ingl%C3%A9s%20en%20Grupo%20IAN';
@@ -156,11 +155,9 @@ export default function ServicesSection() {
             <p className="text-gray-500 text-sm leading-relaxed">{tab.desc}</p>
 
             <ul className="flex flex-col gap-3">
-              {tab.checks.map((check, idx) => (
+              {tab.checks.map((check) => (
                 <li key={check} className="flex items-start gap-2">
-                  <span className="mt-0.5 shrink-0 text-base leading-none">
-                    {CHECK_EMOJIS[idx % CHECK_EMOJIS.length]}
-                  </span>
+                  <span className="mt-0.5 shrink-0 text-ian-green font-bold text-sm leading-none">✓</span>
                   <span className="text-gray-600 text-sm">{check}</span>
                 </li>
               ))}
