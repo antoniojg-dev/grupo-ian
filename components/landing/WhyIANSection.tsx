@@ -8,7 +8,7 @@ const cards = [
   { emoji: '📚', title: 'Regularización',      color: 'bg-ian-green/10',  iconBg: 'bg-ian-green',  desc: 'Reforzamos matemáticas, español, historia e inglés para que tu hijo brille.'               },
   { emoji: '🧠', title: 'Educación Integral',  color: 'bg-ian-purple/10', iconBg: 'bg-ian-purple', desc: 'Método High Scope + estimulación temprana + juego y aprendo.'                             },
   { emoji: '🛡️', title: 'Ambiente Seguro',    color: 'bg-ian-orange/10', iconBg: 'bg-ian-orange', desc: 'Instalaciones supervisadas y comunicación constante con los padres.'                       },
-  { emoji: '🏊', title: 'Natación',            color: 'bg-ian-blue/10',   iconBg: 'bg-ian-blue',   desc: 'Acceso a la alberca de ACTIVE CLUB Universidad. Deporte y diversión.'                     },
+  { emoji: '🌱', title: 'Estimulación Temprana', color: 'bg-ian-green/10',  iconBg: 'bg-ian-green',  desc: 'Actividades diseñadas para potenciar el desarrollo cognitivo, motor y emocional desde los primeros años.' },
 ];
 
 const CARD_DELAYS = ['delay-100', 'delay-200', 'delay-300', 'delay-100', 'delay-200', 'delay-300'];
