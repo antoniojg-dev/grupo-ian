@@ -3,6 +3,7 @@ import HeroSection from '@/components/landing/HeroSection';
 import StatsBar from '@/components/landing/StatsBar';
 import WhyIANSection from '@/components/landing/WhyIANSection';
 import ServicesSection from '@/components/landing/ServicesSection';
+import PaquetesSection from '@/components/landing/PaquetesSection';
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
         <StatsBar />
         <WhyIANSection />
         <ServicesSection />
+        <PaquetesSection />
       </main>
     </>
   );
