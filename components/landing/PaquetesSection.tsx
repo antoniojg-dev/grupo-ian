@@ -80,13 +80,13 @@ export default function PaquetesSection() {
   }, []);
 
   return (
-    <section id="paquetes" className="bg-white py-20 px-6">
+    <section id="paquetes" className="bg-[#FAFAF8] py-20 px-6">
       <div className="mx-auto max-w-5xl">
 
         {/* Título */}
         <h2
           ref={titleRef}
-          className="section-hidden text-center text-3xl md:text-4xl font-bold text-ian-dark"
+          className="section-hidden text-center text-3xl md:text-4xl font-fredoka font-bold text-ian-dark"
         >
           Semillas de{' '}
           <span className="text-ian-orange">Sabiduría</span>
@@ -103,7 +103,7 @@ export default function PaquetesSection() {
         </p>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 items-start">
           {PAQUETES.map((p, i) => (
             <PaqueteCard
               key={p.nombre}
@@ -140,12 +140,16 @@ const PaqueteCard = forwardRef<
   return (
     <div
       ref={ref}
-      className={`section-hidden ${delay} relative rounded-3xl p-8 shadow-md border-2 transition-all duration-300 ${
+      className={`section-hidden ${delay} relative rounded-3xl p-8 bg-white border-2 transition-all duration-300 ${
         p.popular
-          ? 'shadow-xl md:scale-[1.02]'
+          ? 'border-ian-orange md:scale-[1.02]'
           : 'border-gray-100'
       }`}
-      style={p.popular ? { borderColor: p.accentColor } : undefined}
+      style={
+        p.popular
+          ? { boxShadow: '0 20px 60px rgba(255, 106, 27, 0.25)' }
+          : { boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }
+      }
     >
       {/* Badge MÁS POPULAR */}
       {p.popular && (
@@ -166,7 +170,7 @@ const PaqueteCard = forwardRef<
 
       {/* Nombre */}
       <h3
-        className="text-2xl font-bold mt-4"
+        className="font-fredoka text-2xl font-bold mt-4"
         style={{ color: p.accentColor }}
       >
         {p.nombre}
@@ -188,7 +192,7 @@ const PaqueteCard = forwardRef<
         {p.includes.map((item) => (
           <li key={item} className="flex items-start gap-2">
             <span className="font-bold text-sm mt-0.5" style={{ color: p.accentColor }}>
-              ✓
+              ✦
             </span>
             <span className="text-gray-600 text-sm">{item}</span>
           </li>
@@ -199,7 +203,7 @@ const PaqueteCard = forwardRef<
       <p className="text-gray-400 text-xs italic mt-3">{p.nota}</p>
 
       {/* Precio */}
-      <p className="text-4xl font-bold mt-6" style={{ color: p.accentColor }}>
+      <p className="font-fredoka text-5xl font-bold mt-6" style={{ color: p.accentColor }}>
         {p.precio}
         <span className="text-gray-400 text-lg font-normal"> /mes</span>
         <span className="text-sm text-gray-400 block font-normal">MXN</span>
@@ -210,7 +214,7 @@ const PaqueteCard = forwardRef<
         href={waHref}
         target="_blank"
         rel="noopener noreferrer"
-        className={`w-full mt-6 py-3 rounded-full font-semibold text-sm text-center block transition-all duration-200 hover:scale-[1.02] ${
+        className={`w-full mt-6 py-3 rounded-2xl font-quicksand font-semibold text-sm text-center block transition-all duration-200 hover:scale-[1.02] ${
           p.popular
             ? 'text-white'
             : 'border-2 hover:text-white'
@@ -236,7 +240,7 @@ const PaqueteCard = forwardRef<
           }
         }}
       >
-        Inscribirse →
+        ¡Inscribirse!
       </a>
     </div>
   );

@@ -68,13 +68,13 @@ export default function FAQSection() {
   }
 
   return (
-    <section id="faq" className="bg-white py-20 px-6">
+    <section id="faq" className="bg-white rounded-[40px] mx-4 my-8 py-16 px-6">
       <div className="mx-auto max-w-3xl">
 
         {/* Título */}
         <h2
           ref={titleRef}
-          className="section-hidden text-center text-3xl md:text-4xl font-bold text-ian-dark"
+          className="section-hidden text-center text-3xl md:text-4xl font-fredoka font-bold text-ian-dark"
         >
           Preguntas frecuentes
         </h2>
@@ -97,24 +97,22 @@ export default function FAQSection() {
               <div
                 key={i}
                 ref={(el) => { itemRefs.current[i] = el; }}
-                className="section-hidden border-b border-gray-100 py-4"
+                className={`section-hidden border-b border-gray-100 py-2 transition-colors duration-200`}
                 style={{ animationDelay: `${(i + 1) * 100}ms` }}
               >
                 {/* Header */}
                 <button
                   onClick={() => toggle(i)}
-                  className="w-full flex justify-between items-center text-left"
+                  className={`w-full flex justify-between items-center text-left px-4 py-3 rounded-2xl transition-colors duration-200 ${
+                    isOpen ? 'bg-gray-50' : 'hover:bg-gray-50'
+                  }`}
                   aria-expanded={isOpen}
                 >
                   <span className="font-semibold text-ian-dark text-base pr-4">
                     {faq.q}
                   </span>
-                  <span
-                    className={`text-ian-red text-xl font-bold shrink-0 transition-transform duration-300 ${
-                      isOpen ? 'rotate-180' : 'rotate-0'
-                    }`}
-                  >
-                    {isOpen ? '−' : '+'}
+                  <span className="text-ian-red text-2xl font-bold shrink-0 transition-transform duration-300">
+                    {isOpen ? '×' : '→'}
                   </span>
                 </button>
 
@@ -124,7 +122,7 @@ export default function FAQSection() {
                     isOpen ? 'max-h-96' : 'max-h-0'
                   }`}
                 >
-                  <p className="text-gray-500 text-sm leading-relaxed pt-2 pb-4">
+                  <p className="text-gray-500 text-sm leading-relaxed pt-2 pb-4 px-4">
                     {faq.a}
                   </p>
                 </div>

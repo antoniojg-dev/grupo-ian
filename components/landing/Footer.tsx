@@ -32,10 +32,10 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl">
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 divide-y sm:divide-y-0 sm:divide-x divide-white/5">
 
           {/* COL 1 — Marca */}
-          <div>
+          <div className="pb-6 sm:pb-0 sm:pr-6">
             <p className="font-bold text-xl">
               🧠 GRUPO <span className="text-ian-red">IAN</span>
             </p>
@@ -52,7 +52,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
-                className="w-9 h-9 bg-white/10 hover:bg-ian-red rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-200"
+                className="w-9 h-9 bg-blue-500 hover:brightness-110 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-200"
               >
                 f
               </a>
@@ -61,15 +61,24 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="w-9 h-9 bg-white/10 hover:bg-ian-red rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-200"
+                className="w-9 h-9 bg-pink-500 hover:brightness-110 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200"
               >
                 ig
+              </a>
+              <a
+                href={WA_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="w-9 h-9 bg-green-500 hover:brightness-110 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200"
+              >
+                wa
               </a>
             </div>
           </div>
 
           {/* COL 2 — Navegación */}
-          <div>
+          <div className="pt-6 sm:pt-0 sm:px-6">
             <p className="text-white/40 text-xs uppercase tracking-wider mb-4">
               Navegación
             </p>
@@ -88,7 +97,7 @@ export default function Footer() {
           </div>
 
           {/* COL 3 — Servicios */}
-          <div>
+          <div className="pt-6 sm:pt-0 sm:px-6">
             <p className="text-white/40 text-xs uppercase tracking-wider mb-4">
               Servicios
             </p>
@@ -110,7 +119,7 @@ export default function Footer() {
           </div>
 
           {/* COL 4 — Contacto */}
-          <div>
+          <div className="pt-6 sm:pt-0 sm:pl-6">
             <p className="text-white/40 text-xs uppercase tracking-wider mb-4">
               Contacto
             </p>
@@ -144,8 +153,8 @@ export default function Footer() {
         </div>
 
         {/* Separador */}
-        <div className="border-t border-white/10 mt-12 pt-8 flex justify-between flex-wrap gap-2 text-white/40 text-xs">
-          <span>© 2025 Grupo IAN. Todos los derechos reservados.</span>
+        <div className="border-t border-white/5 mt-12 pt-8 flex justify-between flex-wrap gap-2 text-white/40 text-xs">
+          <span>© 2025 GRUPO IAN — Hecho con ❤️ para los niños</span>
           <button className="hover:text-white/70 transition-colors duration-200 cursor-pointer">
             Aviso de Privacidad
           </button>

@@ -51,7 +51,7 @@ export default function Navbar() {
             onClick={(e) => { e.preventDefault(); handleLinkClick('#inicio'); }}
             className="flex flex-col leading-none"
           >
-            <span className="flex items-center gap-1.5 font-poppins text-xl font-bold text-ian-dark">
+            <span className="flex items-center gap-1.5 font-fredoka text-xl font-bold text-ian-dark">
               <span className="text-2xl">🧠</span>
               <span>
                 GRUPO{' '}
@@ -70,7 +70,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => { e.preventDefault(); handleLinkClick(link.href); }}
-                className="relative text-sm font-medium text-ian-dark transition-colors hover:text-ian-red
+                className="relative font-quicksand text-sm font-medium text-ian-dark transition-colors hover:text-ian-red
                   after:absolute after:left-0 after:-bottom-0.5 after:h-0.5 after:w-0 after:bg-ian-red
                   after:transition-all after:duration-300 hover:after:w-full"
               >
@@ -85,7 +85,7 @@ export default function Navbar() {
               href="#contacto"
               onClick={(e) => { e.preventDefault(); handleLinkClick('#contacto'); }}
               className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-ian-red px-5 py-2
-                text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                font-quicksand text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               Portal Padres →
             </a>
@@ -128,7 +128,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => { e.preventDefault(); handleLinkClick(link.href); }}
-                className="border-b border-gray-50 py-3.5 text-base font-medium text-ian-dark
+                className="border-b border-gray-50 py-3.5 font-quicksand text-base font-medium text-ian-dark
                   transition-colors hover:text-ian-red"
                 style={{ animationDelay: `${i * 40}ms` }}
               >

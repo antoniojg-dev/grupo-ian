@@ -3,7 +3,14 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
-const TABS = ['Kinder & Primaria', 'Regularización', 'Inglés', 'Natación'];
+const TABS = [
+  { label: '🎓 Kinder & Primaria', short: 'Kinder & Primaria' },
+  { label: '📚 Regularización',    short: 'Regularización'    },
+  { label: '🌎 Inglés',            short: 'Inglés'            },
+  { label: '🏊 Natación',          short: 'Natación'          },
+];
+
+const CHECK_EMOJIS = ['🟡', '🔵', '🔴', '🟢', '🟡', '🔵'];
 
 const WA_INGLES =
   'https://wa.me/5255780724264?text=Hola%2C%20me%20interesa%20informaci%C3%B3n%20sobre%20las%20clases%20de%20ingl%C3%A9s%20en%20Grupo%20IAN';
@@ -107,11 +114,11 @@ export default function ServicesSection() {
   const tab = TAB_DATA[activeTab];
 
   return (
-    <section id="servicios" className="bg-gray-50 py-20 px-6">
+    <section id="servicios" className="bg-white rounded-[40px] mx-4 my-8 py-16 px-4">
       <div className="mx-auto max-w-5xl">
 
         {/* Título */}
-        <h2 className="text-center text-3xl md:text-4xl font-bold text-ian-dark">
+        <h2 className="text-center text-3xl md:text-4xl font-fredoka font-bold text-ian-dark">
           Todo lo que tu hijo necesita en{' '}
           <span className="text-ian-red">un solo lugar</span>
         </h2>
@@ -121,38 +128,38 @@ export default function ServicesSection() {
           Desde Kinder hasta Primaria, tenemos el programa perfecto para cada etapa.
         </p>
 
-        {/* Tab switcher */}
-        <div className="flex gap-2 mt-10 overflow-x-auto pb-2 justify-center">
-          {TABS.map((label, i) => (
+        {/* Tab switcher — pills con emoji */}
+        <div className="grid grid-cols-2 gap-2 mt-10 md:flex md:gap-2 md:justify-center">
+          {TABS.map((tab, i) => (
             <button
-              key={label}
+              key={tab.short}
               onClick={() => setActiveTab(i)}
-              className={`whitespace-nowrap px-5 py-2 rounded-full font-medium text-sm transition-all duration-200 ${
+              className={`text-sm text-center py-2.5 px-4 rounded-full font-medium transition-all duration-200 md:whitespace-nowrap ${
                 activeTab === i
-                  ? 'bg-ian-red text-white shadow-sm'
-                  : 'text-gray-500 hover:text-ian-dark'
+                  ? 'bg-ian-red text-white shadow-lg shadow-red-200'
+                  : 'bg-gray-100 text-gray-600 hover:text-ian-dark'
               }`}
             >
-              {label}
+              {tab.label}
             </button>
           ))}
         </div>
 
-        {/* Tab content — key forces remount for fade-in animation */}
+        {/* Tab content */}
         <div
           key={activeTab}
           className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-10 items-center animate-fade-in"
         >
           {/* Left — texto */}
           <div className="flex flex-col gap-5">
-            <h3 className="text-2xl font-bold text-ian-dark">{tab.headline}</h3>
+            <h3 className="text-2xl font-fredoka font-bold text-ian-dark">{tab.headline}</h3>
             <p className="text-gray-500 text-sm leading-relaxed">{tab.desc}</p>
 
             <ul className="flex flex-col gap-3">
-              {tab.checks.map((check) => (
+              {tab.checks.map((check, idx) => (
                 <li key={check} className="flex items-start gap-2">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ian-green/20 text-ian-green text-xs font-bold">
-                    ✓
+                  <span className="mt-0.5 shrink-0 text-base leading-none">
+                    {CHECK_EMOJIS[idx % CHECK_EMOJIS.length]}
                   </span>
                   <span className="text-gray-600 text-sm">{check}</span>
                 </li>
@@ -163,14 +170,14 @@ export default function ServicesSection() {
               href={tab.ctaHref}
               target={tab.ctaTarget}
               rel={tab.ctaTarget === '_blank' ? 'noopener noreferrer' : undefined}
-              className={`self-start inline-flex items-center rounded-full ${tab.ctaColor} px-6 py-3 font-semibold text-white text-sm transition-all duration-200 hover:scale-[1.02]`}
+              className={`self-start inline-flex items-center rounded-full ${tab.ctaColor} px-6 py-3 font-quicksand font-semibold text-white text-sm transition-all duration-200 hover:scale-[1.02]`}
             >
               {tab.ctaLabel}
             </a>
           </div>
 
           {/* Right — imagen + precio flotante */}
-          <div className="relative">
+          <div className="relative hidden md:block">
             <Image
               src={tab.image}
               alt={tab.imageAlt}
@@ -179,7 +186,7 @@ export default function ServicesSection() {
               className="w-full h-72 md:h-80 object-cover rounded-2xl shadow-lg"
             />
             <div className="absolute bottom-4 right-4 bg-white rounded-xl shadow-lg p-4 max-w-[190px]">
-              <p className="text-ian-red font-bold text-xl leading-tight">{tab.price}</p>
+              <p className="font-fredoka text-ian-red font-bold text-xl leading-tight">{tab.price}</p>
               <p className="text-gray-500 text-sm mt-1">{tab.priceLabel}</p>
             </div>
           </div>

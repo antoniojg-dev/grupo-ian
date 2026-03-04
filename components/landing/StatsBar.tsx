@@ -56,10 +56,10 @@ function StatItem({
 
   return (
     <div className="flex flex-col items-center justify-center py-6 px-4">
-      <span className={`text-5xl md:text-6xl font-bold ${color}`}>
+      <span className={`font-fredoka text-6xl md:text-7xl font-bold ${color}`}>
         {count}{suffix}
       </span>
-      <span className="text-white/80 text-sm md:text-base mt-1 text-center">
+      <span className="text-white/80 text-xs md:text-sm mt-1 text-center">
         {label}
       </span>
     </div>
@@ -92,8 +92,7 @@ export default function StatsBar() {
   return (
     <section
       ref={sectionRef}
-      className="bg-ian-dark py-20 px-6 text-white"
-      style={{ clipPath: 'polygon(0 4%, 100% 0%, 100% 96%, 0% 100%)' }}
+      className="bg-ian-dark py-20 px-6 text-white rounded-[40px] mx-4 md:mx-8 my-8"
       aria-label="Estadísticas Grupo IAN"
     >
       <div className="mx-auto max-w-4xl">

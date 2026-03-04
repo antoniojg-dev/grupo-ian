@@ -13,7 +13,8 @@
   --color-ian-dark:   #1A1A2E;
 
   /* Tipografía */
-  --font-poppins: var(--font-poppins);
+  --font-fredoka:   var(--font-fredoka);
+  --font-quicksand: var(--font-quicksand);
 }
 
 /* ─── CSS Variables globales ────────────────────────────────── */
@@ -34,11 +35,18 @@ html {
 }
 
 body {
-  font-family: var(--font-poppins), system-ui, sans-serif;
-  background-color: #ffffff;
+  font-family: var(--font-quicksand), sans-serif;
+  background-color: #FAFAF8;
   color: var(--ian-dark);
   -webkit-font-smoothing: antialiased;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-fredoka), sans-serif;
+}
+
+h1 { letter-spacing: -0.01em; }
+h2, h3 { letter-spacing: 0; }
 
 /* ─── Animaciones de entrada ────────────────────────────────── */
 @keyframes fadeInUp {

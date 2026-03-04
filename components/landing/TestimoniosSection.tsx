@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 type Testimonio = {
   texto: string;
@@ -8,6 +8,7 @@ type Testimonio = {
   rol: string;
   iniciales: string;
   color: string;
+  quoteColor: string;
 };
 
 const testimonios: Testimonio[] = [
@@ -18,6 +19,7 @@ const testimonios: Testimonio[] = [
     rol: 'Mamá de Sebastián · 4° Primaria',
     iniciales: 'MG',
     color: 'bg-ian-red',
+    quoteColor: 'text-ian-red',
   },
   {
     texto:
@@ -26,6 +28,7 @@ const testimonios: Testimonio[] = [
     rol: 'Papá de Sofía · Kinder',
     iniciales: 'RH',
     color: 'bg-ian-blue',
+    quoteColor: 'text-ian-blue',
   },
   {
     texto:
@@ -34,6 +37,7 @@ const testimonios: Testimonio[] = [
     rol: 'Mamá de Diego · 2° Primaria',
     iniciales: 'LM',
     color: 'bg-ian-green',
+    quoteColor: 'text-ian-green',
   },
   {
     texto:
@@ -42,6 +46,7 @@ const testimonios: Testimonio[] = [
     rol: 'Mamá de Valentina · 1° Primaria',
     iniciales: 'AP',
     color: 'bg-ian-orange',
+    quoteColor: 'text-ian-orange',
   },
   {
     texto:
@@ -50,23 +55,18 @@ const testimonios: Testimonio[] = [
     rol: 'Papá de Emilio · Kinder',
     iniciales: 'CR',
     color: 'bg-ian-purple',
+    quoteColor: 'text-ian-purple',
   },
 ];
 
-const total = testimonios.length;
-
 export default function TestimoniosSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-
   const titleRef    = useRef<HTMLHeadingElement>(null);
   const starsRef    = useRef<HTMLParagraphElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const gridRef     = useRef<HTMLDivElement>(null);
 
-  // Entry animations via IntersectionObserver
   useEffect(() => {
-    const els = [titleRef.current, starsRef.current, subtitleRef.current, carouselRef.current];
+    const els = [titleRef.current, starsRef.current, subtitleRef.current, gridRef.current];
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -84,29 +84,14 @@ export default function TestimoniosSection() {
     return () => observer.disconnect();
   }, []);
 
-  // Auto-play every 4 s, pauses on hover
-  useEffect(() => {
-    if (paused) return;
-    const id = setInterval(() => {
-      setActiveIndex((i) => (i + 1) % total);
-    }, 4000);
-    return () => clearInterval(id);
-  }, [paused]);
-
-  const prev = () => setActiveIndex((i) => (i - 1 + total) % total);
-  const next = () => setActiveIndex((i) => (i + 1) % total);
-
-  const prevIndex = (activeIndex - 1 + total) % total;
-  const nextIndex = (activeIndex + 1) % total;
-
   return (
-    <section id="testimonios" className="bg-gray-50 py-20 px-6">
+    <section id="testimonios" className="bg-[#FAFAF8] py-20 px-6">
       <div className="mx-auto max-w-5xl">
 
         {/* Título */}
         <h2
           ref={titleRef}
-          className="section-hidden text-center text-3xl md:text-4xl font-bold text-ian-dark"
+          className="section-hidden text-center text-3xl md:text-4xl font-fredoka font-bold text-ian-dark"
         >
           Lo que dicen las familias de Grupo IAN
         </h2>
@@ -127,72 +112,14 @@ export default function TestimoniosSection() {
           Más de 200 familias ya confían en nosotros.
         </p>
 
-        {/* Carousel */}
+        {/* Grid de burbujas */}
         <div
-          ref={carouselRef}
-          className="section-hidden delay-200 mt-12"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
+          ref={gridRef}
+          className="section-hidden delay-200 mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {/* Track */}
-          <div className="flex items-center gap-4">
-
-            {/* ← */}
-            <button
-              onClick={prev}
-              aria-label="Testimonio anterior"
-              className="flex-shrink-0 bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center text-ian-dark transition-colors hover:bg-ian-red hover:text-white"
-            >
-              ←
-            </button>
-
-            {/* Cards */}
-            <div className="flex-1 min-w-0">
-
-              {/* Mobile: solo la card activa */}
-              <div className="block md:hidden">
-                <TestimonioCard testimonio={testimonios[activeIndex]} />
-              </div>
-
-              {/* Desktop: prev · active · next */}
-              <div className="hidden md:flex gap-6 items-stretch">
-                <div className="flex-1 transition-all duration-500 scale-95 opacity-60">
-                  <TestimonioCard testimonio={testimonios[prevIndex]} />
-                </div>
-                <div className="flex-1 transition-all duration-500 scale-100 opacity-100">
-                  <TestimonioCard testimonio={testimonios[activeIndex]} />
-                </div>
-                <div className="flex-1 transition-all duration-500 scale-95 opacity-60">
-                  <TestimonioCard testimonio={testimonios[nextIndex]} />
-                </div>
-              </div>
-            </div>
-
-            {/* → */}
-            <button
-              onClick={next}
-              aria-label="Testimonio siguiente"
-              className="flex-shrink-0 bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center text-ian-dark transition-colors hover:bg-ian-red hover:text-white"
-            >
-              →
-            </button>
-          </div>
-
-          {/* Dots */}
-          <div className="flex justify-center items-center gap-2 mt-8">
-            {testimonios.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveIndex(i)}
-                aria-label={`Ir al testimonio ${i + 1}`}
-                className={`rounded-full transition-all duration-300 ${
-                  i === activeIndex
-                    ? 'bg-ian-red w-6 h-2'
-                    : 'bg-gray-300 w-2 h-2'
-                }`}
-              />
-            ))}
-          </div>
+          {testimonios.map((t, idx) => (
+            <TestimonioCard key={t.nombre} testimonio={t} index={idx} />
+          ))}
         </div>
 
       </div>
@@ -200,32 +127,30 @@ export default function TestimoniosSection() {
   );
 }
 
-function TestimonioCard({ testimonio: t }: { testimonio: Testimonio }) {
+function TestimonioCard({ testimonio: t, index }: { testimonio: Testimonio; index: number }) {
+  const bgColor = index % 2 === 0 ? 'bg-[#FFFDE7]' : 'bg-[#E3F2FD]';
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm h-full">
+    <div className={`${bgColor} rounded-3xl p-6 flex flex-col gap-4`}>
 
-      {/* Comillas decorativas */}
-      <div className="text-6xl text-ian-red/20 font-serif leading-none -mb-4 select-none">
+      {/* Comillas grandes en color del avatar */}
+      <div className={`text-6xl ${t.quoteColor} font-serif leading-none -mb-4 opacity-30 select-none`}>
         &ldquo;
       </div>
 
       {/* Texto */}
-      <p className="text-gray-600 text-sm leading-relaxed italic">
+      <p className="text-gray-700 text-sm leading-relaxed italic flex-1">
         {t.texto}
       </p>
 
-      {/* Separador */}
-      <hr className="border-gray-100 my-4" />
-
       {/* Avatar + info */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
         <div
           className={`w-12 h-12 ${t.color} text-white font-bold text-sm flex items-center justify-center rounded-full flex-shrink-0`}
         >
           {t.iniciales}
         </div>
         <div>
-          <p className="font-semibold text-ian-dark text-sm">{t.nombre}</p>
+          <p className="font-bold text-ian-dark text-sm">{t.nombre}</p>
           <p className="text-gray-400 text-xs">{t.rol}</p>
           <p className="text-ian-orange text-xs mt-1">★★★★★</p>
         </div>
