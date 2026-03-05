@@ -57,3 +57,7 @@ export type KPIs = {
   inscripciones_pendientes: number
   total_alumnos_activos: number
 }
+
+export type AlumnoConPago = Alumno & {
+  estado_pago_mes: 'pagado' | 'pendiente' | 'vencido' | 'condonado'
+}

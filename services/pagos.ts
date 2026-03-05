@@ -73,6 +73,34 @@ export async function getAlumnosConAdeudo(supabase: SupabaseClient) {
   return activos.filter((a) => !pagadosIds.has(a.id))
 }
 
+export async function getPagosByPadre(supabase: SupabaseClient, padreId: string): Promise<Pago[]> {
+  const { data, error } = await supabase
+    .from('pagos')
+    .select('*, alumnos(nombre, apellido, grado), servicios(nombre)')
+    .eq('padre_id', padreId)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return (data ?? []) as Pago[]
+}
+
+export async function getEstadoPagoMes(
+  supabase: SupabaseClient,
+  alumnoId: string,
+  mes: number,
+  anio: number
+): Promise<string | null> {
+  const { data } = await supabase
+    .from('pagos')
+    .select('estado')
+    .eq('alumno_id', alumnoId)
+    .eq('periodo_mes', mes)
+    .eq('periodo_anio', anio)
+    .single()
+
+  return data?.estado ?? null
+}
+
 export async function getKPIs(supabase: SupabaseClient): Promise<KPIs> {
   const now = new Date()
   const mes = now.getMonth() + 1

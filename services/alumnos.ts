@@ -102,3 +102,35 @@ export async function updateAlumnoPadre(supabase: SupabaseClient, alumnoId: stri
     .eq('id', alumnoId)
   if (error) throw error
 }
+
+export async function getAlumnosByPadre(supabase: SupabaseClient, padreId: string) {
+  const now = new Date()
+  const mes = now.getMonth() + 1
+  const anio = now.getFullYear()
+
+  const { data: alumnos, error } = await supabase
+    .from('alumnos')
+    .select('*')
+    .eq('padre_id', padreId)
+    .eq('activo', true)
+    .order('apellido', { ascending: true })
+
+  if (error) throw error
+  if (!alumnos || alumnos.length === 0) return []
+
+  const alumnoIds = alumnos.map((a) => a.id)
+
+  const { data: pagos } = await supabase
+    .from('pagos')
+    .select('alumno_id, estado')
+    .in('alumno_id', alumnoIds)
+    .eq('periodo_mes', mes)
+    .eq('periodo_anio', anio)
+
+  const pagoMap = new Map((pagos ?? []).map((p) => [p.alumno_id, p.estado]))
+
+  return alumnos.map((a) => ({
+    ...a,
+    estado_pago_mes: (pagoMap.get(a.id) ?? 'pendiente') as 'pagado' | 'pendiente' | 'vencido' | 'condonado',
+  }))
+}
