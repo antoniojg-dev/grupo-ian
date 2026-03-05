@@ -108,6 +108,11 @@ export async function POST(req: NextRequest) {
       )
 
       // Enviar email de confirmación en background
+      console.log('[webhook] Resend config:', {
+        hasApiKey: !!process.env.RESEND_API_KEY,
+        fromEmail: process.env.RESEND_FROM_EMAIL,
+      })
+      console.log('[webhook] Intentando enviar email a:', perfil?.email)
       if (perfil?.email && alumno && servicio) {
         const periodoLabel = `${new Date(0, (pago.periodo_mes ?? 1) - 1).toLocaleString('es-MX', { month: 'long' })} ${pago.periodo_anio ?? new Date().getFullYear()}`
         sendConfirmacionPago({
@@ -118,7 +123,11 @@ export async function POST(req: NextRequest) {
           concepto: servicio.nombre,
           periodo: periodoLabel,
           montoFinal: pago.monto_final,
-        }).catch((err) => console.error('[webhook] Error enviando email:', err))
+        })
+          .then((emailResult) => console.log('[webhook] Email enviado:', emailResult))
+          .catch((err) => console.error('[webhook] Error enviando email:', err))
+      } else {
+        console.warn('[webhook] Email omitido — perfil:', perfil, 'alumno:', alumno, 'servicio:', servicio)
       }
 
       console.log(`[webhook] Pago ${pago.id} confirmado — folio ${folio}`)
