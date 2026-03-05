@@ -54,6 +54,15 @@ export async function GET(request: NextRequest) {
 
   // Flujos que requieren crear/actualizar contraseña
   if (type === "recovery" || type === "invite") {
+    // Si el padre aceptó una invitación con alumno_id en metadata, vincular padre_id
+    const alumnoId = user.user_metadata?.alumno_id as string | undefined
+    if (type === "invite" && alumnoId) {
+      await supabase
+        .from("alumnos")
+        .update({ padre_id: user.id })
+        .eq("id", alumnoId)
+    }
+
     redirectUrl.pathname = "/auth/set-password";
     return NextResponse.redirect(redirectUrl);
   }

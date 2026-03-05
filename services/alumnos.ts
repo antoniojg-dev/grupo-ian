@@ -94,3 +94,11 @@ export async function toggleAlumnoActivo(supabase: SupabaseClient, id: string, a
   const { error } = await supabase.from('alumnos').update({ activo }).eq('id', id)
   if (error) throw error
 }
+
+export async function updateAlumnoPadre(supabase: SupabaseClient, alumnoId: string, padreId: string) {
+  const { error } = await supabase
+    .from('alumnos')
+    .update({ padre_id: padreId })
+    .eq('id', alumnoId)
+  if (error) throw error
+}

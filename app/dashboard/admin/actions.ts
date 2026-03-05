@@ -26,8 +26,9 @@ export async function invitarPadreAction(
   const adminClient = createAdminClient()
 
   // 1. Invitar al padre por email (crea usuario en auth.users)
+  //    Se incluye alumno_id en metadata para vincular padre_id cuando acepte la invitación
   const { data, error } = await adminClient.auth.admin.inviteUserByEmail(email, {
-    data: { nombre, apellido },
+    data: { nombre, apellido, alumno_id: alumnoId },
     redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/confirm`,
   })
 
@@ -43,13 +44,7 @@ export async function invitarPadreAction(
     rol: 'padre',
   })
 
-  // 3. Vincular padre con el alumno
-  const { error: updateError } = await adminClient
-    .from('alumnos')
-    .update({ padre_id: padreId })
-    .eq('id', alumnoId)
-
-  if (updateError) throw new Error(`Error al vincular padre: ${updateError.message}`)
+  // padre_id en alumnos se actualiza cuando el padre acepta la invitación (/auth/confirm)
 
   return { padreId }
 }
