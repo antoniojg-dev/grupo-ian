@@ -32,9 +32,13 @@ export async function POST(req: NextRequest) {
   const supabase = createAdminClient()
 
   try {
+    console.log('1. Evento recibido:', event.type)
+
     if (event.type === 'payment_intent.succeeded') {
       const intent = event.data.object as import('stripe').Stripe.PaymentIntent
       const { alumnoId, servicioId, padreId, mes, anio, cuponId } = intent.metadata
+
+      console.log('2. PaymentIntent ID:', intent.id)
 
       // Buscar el pago por stripe_payment_intent_id
       const { data: pago, error: pagoErr } = await supabase
@@ -51,6 +55,8 @@ export async function POST(req: NextRequest) {
         .eq('stripe_payment_intent_id', intent.id)
         .single()
 
+      console.log('3. Query resultado:', { pago, pagoErr })
+
       if (pagoErr || !pago) {
         console.error('[webhook] Pago no encontrado para intent:', intent.id, pagoErr)
         return NextResponse.json({ received: true })
@@ -66,14 +72,19 @@ export async function POST(req: NextRequest) {
       }
 
       // Actualizar pago a pagado
-      await supabase
+      const { data: updateData, error: updateErr } = await supabase
         .from('pagos')
         .update({
           estado: 'pagado',
           paid_at: new Date().toISOString(),
           folio,
         })
-        .eq('id', pago.id)
+        .eq('stripe_payment_intent_id', intent.id)
+        .select()
+
+      console.log('4. Update resultado:', { updateData, updateErr })
+      console.log('5. Filas actualizadas:', updateData)
+      if (updateErr) console.error('Update error:', updateErr)
 
       // Incrementar usos del cupón si aplica
       if (cuponId) {
