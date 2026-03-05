@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe'
 import { generateAndSaveReceipt } from '@/server/pdf/generate-receipt'
+import { sendConfirmacionPago } from '@/server/emails/send-email'
 
 // Supabase con service role para bypassear RLS en el webhook
 function createAdminClient() {
@@ -38,7 +39,15 @@ export async function POST(req: NextRequest) {
       // Buscar el pago por stripe_payment_intent_id
       const { data: pago } = await supabase
         .from('pagos')
-        .select('id')
+        .select(`
+          id,
+          monto_final,
+          periodo_mes,
+          periodo_anio,
+          alumnos (nombre, apellido),
+          servicios (nombre),
+          perfiles (nombre, email)
+        `)
         .eq('stripe_payment_intent_id', intent.id)
         .single()
 
@@ -75,6 +84,23 @@ export async function POST(req: NextRequest) {
       generateAndSaveReceipt(pago.id).catch((err) =>
         console.error('[webhook] Error generando PDF:', err)
       )
+
+      // Enviar email de confirmación en background
+      const alumno = pago.alumnos as unknown as { nombre: string; apellido: string } | null
+      const servicio = pago.servicios as unknown as { nombre: string } | null
+      const perfil = pago.perfiles as unknown as { nombre: string; email: string } | null
+      if (perfil?.email && alumno && servicio) {
+        const periodoLabel = `${new Date(0, (pago.periodo_mes ?? 1) - 1).toLocaleString('es-MX', { month: 'long' })} ${pago.periodo_anio ?? new Date().getFullYear()}`
+        sendConfirmacionPago({
+          to: perfil.email,
+          nombrePadre: perfil.nombre,
+          nombreAlumno: `${alumno.nombre} ${alumno.apellido}`,
+          folio,
+          concepto: servicio.nombre,
+          periodo: periodoLabel,
+          montoFinal: pago.monto_final,
+        }).catch((err) => console.error('[webhook] Error enviando email:', err))
+      }
 
       console.log(`[webhook] Pago ${pago.id} confirmado — folio ${folio}`)
     }

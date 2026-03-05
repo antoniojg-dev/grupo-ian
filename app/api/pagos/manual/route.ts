@@ -4,6 +4,7 @@ import { createClient as createAdminClientRaw } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 import { buildPaymentData } from '@/server/payments/process-payment'
 import { generateAndSaveReceipt } from '@/server/pdf/generate-receipt'
+import { sendConfirmacionPago } from '@/server/emails/send-email'
 import { Alumno, Servicio } from '@/types'
 import { Cupon } from '@/server/payments/apply-coupon'
 
@@ -150,6 +151,26 @@ export async function POST(req: NextRequest) {
       generateAndSaveReceipt(nuevoPago.id).catch((err) =>
         console.error('[pagos/manual] Error generando PDF:', err)
       )
+    }
+
+    // Enviar email de confirmación en background
+    const { data: padreData } = await adminSupabase
+      .from('perfiles')
+      .select('nombre, email')
+      .eq('id', alumno.padre_id)
+      .single()
+
+    if (padreData?.email) {
+      const periodoLabel = `${new Date(0, mes - 1).toLocaleString('es-MX', { month: 'long' })} ${anio}`
+      sendConfirmacionPago({
+        to: padreData.email,
+        nombrePadre: padreData.nombre,
+        nombreAlumno: `${alumno.nombre} ${alumno.apellido}`,
+        folio,
+        concepto: servicio.nombre,
+        periodo: periodoLabel,
+        montoFinal: paymentData.montoFinal,
+      }).catch((err) => console.error('[pagos/manual] Error enviando email:', err))
     }
 
     return NextResponse.json({ folio, monto: paymentData.montoFinal })
