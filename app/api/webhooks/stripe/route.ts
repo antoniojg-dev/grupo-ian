@@ -40,18 +40,10 @@ export async function POST(req: NextRequest) {
 
       console.log('2. PaymentIntent ID:', intent.id)
 
-      // Buscar el pago por stripe_payment_intent_id
+      // Paso 1: Buscar solo el pago
       const { data: pago, error: pagoErr } = await supabase
         .from('pagos')
-        .select(`
-          id,
-          monto_final,
-          periodo_mes,
-          periodo_anio,
-          alumnos (nombre, apellido),
-          servicios (nombre),
-          padre:perfiles!padre_id (nombre, email)
-        `)
+        .select('id, alumno_id, servicio_id, padre_id, monto_final, periodo_mes, periodo_anio')
         .eq('stripe_payment_intent_id', intent.id)
         .single()
 
@@ -61,6 +53,25 @@ export async function POST(req: NextRequest) {
         console.error('[webhook] Pago no encontrado para intent:', intent.id, pagoErr)
         return NextResponse.json({ received: true })
       }
+
+      // Paso 2: Buscar datos adicionales para email y PDF
+      const [{ data: alumno }, { data: servicio }, { data: perfil }] = await Promise.all([
+        supabase
+          .from('alumnos')
+          .select('nombre, apellido')
+          .eq('id', pago.alumno_id)
+          .single(),
+        supabase
+          .from('servicios')
+          .select('nombre')
+          .eq('id', pago.servicio_id)
+          .single(),
+        supabase
+          .from('perfiles')
+          .select('nombre, email')
+          .eq('id', pago.padre_id)
+          .single(),
+      ])
 
       // Generar folio via función SQL
       const { data: folio, error: folioErr } = await supabase.rpc('generar_folio', {
@@ -97,9 +108,6 @@ export async function POST(req: NextRequest) {
       )
 
       // Enviar email de confirmación en background
-      const alumno = pago.alumnos as unknown as { nombre: string; apellido: string } | null
-      const servicio = pago.servicios as unknown as { nombre: string } | null
-      const perfil = pago.padre as unknown as { nombre: string; email: string } | null
       if (perfil?.email && alumno && servicio) {
         const periodoLabel = `${new Date(0, (pago.periodo_mes ?? 1) - 1).toLocaleString('es-MX', { month: 'long' })} ${pago.periodo_anio ?? new Date().getFullYear()}`
         sendConfirmacionPago({
