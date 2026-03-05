@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getAlumnoById } from '@/services/alumnos'
 import AlumnoDetailEdit from '@/components/admin/AlumnoDetailEdit'
+import BotonRecibo from '@/components/BotonRecibo'
 import { Pago } from '@/types'
 
 const MESES = [
@@ -114,6 +115,7 @@ export default async function AlumnoDetailPage({ params }: { params: Promise<{ i
                       <th className="text-right px-4 py-2.5 font-quicksand font-semibold text-gray-500 text-xs">Monto</th>
                       <th className="text-left px-4 py-2.5 font-quicksand font-semibold text-gray-500 text-xs">Estado</th>
                       <th className="text-left px-4 py-2.5 font-quicksand font-semibold text-gray-500 text-xs hidden md:table-cell">Fecha</th>
+                      <th className="px-4 py-2.5" />
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
@@ -139,6 +141,11 @@ export default async function AlumnoDetailPage({ params }: { params: Promise<{ i
                           {pago.paid_at
                             ? new Date(pago.paid_at).toLocaleDateString('es-MX')
                             : new Date(pago.created_at).toLocaleDateString('es-MX')}
+                        </td>
+                        <td className="px-4 py-3">
+                          {pago.estado === 'pagado' && pago.folio && (
+                            <BotonRecibo folio={pago.folio} pdfUrl={pago.pdf_url} />
+                          )}
                         </td>
                       </tr>
                     ))}

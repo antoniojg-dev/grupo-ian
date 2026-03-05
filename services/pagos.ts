@@ -124,7 +124,9 @@ export async function getKPIs(supabase: SupabaseClient): Promise<KPIs> {
       supabase
         .from('inscripciones')
         .select('id', { count: 'exact', head: true })
-        .eq('estado', 'pendiente'),
+        .eq('estado', 'pendiente')
+        .gte('created_at', `${anio}-01-01`)
+        .lt('created_at', `${anio + 1}-01-01`),
     ])
 
   const pagosMes =

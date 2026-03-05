@@ -67,5 +67,5 @@ export type KPIs = {
 }
 
 export type AlumnoConPago = Alumno & {
-  estado_pago_mes: 'pagado' | 'pendiente' | 'vencido' | 'condonado'
+  estado_pago_mes: 'pagado' | 'pendiente' | 'vencido' | 'sin_pago'
 }

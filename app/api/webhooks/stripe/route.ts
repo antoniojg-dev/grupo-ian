@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe'
+import { generateAndSaveReceipt } from '@/server/pdf/generate-receipt'
 
 // Supabase con service role para bypassear RLS en el webhook
 function createAdminClient() {
@@ -69,6 +70,11 @@ export async function POST(req: NextRequest) {
       if (cuponId) {
         await supabase.rpc('incrementar_usos_cupon', { cupon_id: cuponId })
       }
+
+      // Generar PDF en background (no bloquear el webhook)
+      generateAndSaveReceipt(pago.id).catch((err) =>
+        console.error('[webhook] Error generando PDF:', err)
+      )
 
       console.log(`[webhook] Pago ${pago.id} confirmado — folio ${folio}`)
     }

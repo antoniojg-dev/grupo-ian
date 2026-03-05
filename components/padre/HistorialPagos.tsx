@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Download } from 'lucide-react'
 import PagoStatusBadge from './PagoStatusBadge'
 import BotonPagar from './BotonPagar'
+import BotonRecibo from '@/components/BotonRecibo'
 import { Pago, AlumnoConPago } from '@/types'
 
 const MESES = [
@@ -145,16 +145,9 @@ export default function HistorialPagos({
                         anio={pago.periodo_anio ?? undefined}
                         label="Pagar"
                       />
-                    ) : (
-                      <button
-                        disabled
-                        title="Próximamente"
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-quicksand text-xs text-gray-300 border border-gray-200 cursor-not-allowed"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                        Recibo
-                      </button>
-                    )}
+                    ) : pago.estado === 'pagado' && pago.folio ? (
+                      <BotonRecibo folio={pago.folio} pdfUrl={pago.pdf_url} />
+                    ) : null}
                   </td>
                 </tr>
               ))}

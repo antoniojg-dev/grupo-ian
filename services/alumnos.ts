@@ -1,7 +1,18 @@
 import { SupabaseClient } from '@supabase/supabase-js'
-import { Alumno } from '@/types'
+import { Alumno, AlumnoConPago } from '@/types'
 
-export async function getAlumnos(supabase: SupabaseClient): Promise<Alumno[]> {
+function resolverEstado(estados: string[]): AlumnoConPago['estado_pago_mes'] {
+  if (estados.includes('pagado')) return 'pagado'
+  if (estados.includes('pendiente')) return 'pendiente'
+  if (estados.includes('vencido')) return 'vencido'
+  return 'sin_pago'
+}
+
+export async function getAlumnos(supabase: SupabaseClient): Promise<AlumnoConPago[]> {
+  const ahora = new Date()
+  const mesActual = ahora.getMonth() + 1
+  const anioActual = ahora.getFullYear()
+
   const { data: alumnos, error } = await supabase
     .from('alumnos')
     .select('*')
@@ -10,20 +21,34 @@ export async function getAlumnos(supabase: SupabaseClient): Promise<Alumno[]> {
   if (error) throw error
   if (!alumnos || alumnos.length === 0) return []
 
+  const alumnoIds = alumnos.map((a) => a.id)
   const padreIds = [...new Set(alumnos.filter((a) => a.padre_id).map((a) => a.padre_id as string))]
 
-  if (padreIds.length === 0) return alumnos
+  const [pagosResult, perfilesResult] = await Promise.all([
+    supabase
+      .from('pagos')
+      .select('alumno_id, estado')
+      .in('alumno_id', alumnoIds)
+      .eq('periodo_mes', mesActual)
+      .eq('periodo_anio', anioActual),
+    padreIds.length > 0
+      ? supabase.from('perfiles').select('id, nombre, apellido').in('id', padreIds)
+      : Promise.resolve({ data: [] as { id: string; nombre: string | null; apellido: string | null }[] }),
+  ])
 
-  const { data: perfiles } = await supabase
-    .from('perfiles')
-    .select('id, nombre, apellido')
-    .in('id', padreIds)
+  const pagosMap = new Map<string, string[]>()
+  for (const p of pagosResult.data ?? []) {
+    const arr = pagosMap.get(p.alumno_id) ?? []
+    arr.push(p.estado)
+    pagosMap.set(p.alumno_id, arr)
+  }
 
-  const perfilMap = new Map((perfiles ?? []).map((p) => [p.id, p]))
+  const perfilMap = new Map((perfilesResult.data ?? []).map((p) => [p.id, p]))
 
   return alumnos.map((a) => ({
     ...a,
     padre: a.padre_id ? (perfilMap.get(a.padre_id) ?? null) : null,
+    estado_pago_mes: resolverEstado(pagosMap.get(a.id) ?? []),
   }))
 }
 
@@ -127,10 +152,15 @@ export async function getAlumnosByPadre(supabase: SupabaseClient, padreId: strin
     .eq('periodo_mes', mes)
     .eq('periodo_anio', anio)
 
-  const pagoMap = new Map((pagos ?? []).map((p) => [p.alumno_id, p.estado]))
+  const pagosMap = new Map<string, string[]>()
+  for (const p of pagos ?? []) {
+    const arr = pagosMap.get(p.alumno_id) ?? []
+    arr.push(p.estado)
+    pagosMap.set(p.alumno_id, arr)
+  }
 
   return alumnos.map((a) => ({
     ...a,
-    estado_pago_mes: (pagoMap.get(a.id) ?? 'pendiente') as 'pagado' | 'pendiente' | 'vencido' | 'condonado',
+    estado_pago_mes: resolverEstado(pagosMap.get(a.id) ?? []),
   }))
 }

@@ -6,25 +6,7 @@ import AlumnosList from '@/components/admin/AlumnosList'
 export default async function AlumnosPage() {
   const supabase = await createClient()
 
-  const now = new Date()
-  const mes = now.getMonth() + 1
-  const anio = now.getFullYear()
-
-  const [alumnos, pagosMesResult] = await Promise.allSettled([
-    getAlumnos(supabase),
-    supabase
-      .from('pagos')
-      .select('alumno_id')
-      .eq('estado', 'pagado')
-      .eq('periodo_mes', mes)
-      .eq('periodo_anio', anio),
-  ])
-
-  const alumnosData = alumnos.status === 'fulfilled' ? alumnos.value : []
-  const pagadosIds: string[] =
-    pagosMesResult.status === 'fulfilled'
-      ? [...new Set((pagosMesResult.value.data ?? []).map((p: { alumno_id: string }) => p.alumno_id))]
-      : []
+  const alumnosData = await getAlumnos(supabase).catch(() => [])
 
   return (
     <main className="p-6 lg:p-8">
@@ -53,7 +35,7 @@ export default async function AlumnosPage() {
 
         {/* Lista */}
         <div className="bg-white rounded-2xl shadow-sm p-6">
-          <AlumnosList alumnos={alumnosData} alumnosPagadosIds={pagadosIds} />
+          <AlumnosList alumnos={alumnosData} />
         </div>
       </div>
     </main>

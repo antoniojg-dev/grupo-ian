@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { createClient as createAdminClientRaw } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 import { buildPaymentData } from '@/server/payments/process-payment'
+import { generateAndSaveReceipt } from '@/server/pdf/generate-receipt'
 import { Alumno, Servicio } from '@/types'
 import { Cupon } from '@/server/payments/apply-coupon'
 
@@ -116,7 +117,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Insertar pago como pagado
-    const { error: insertErr } = await adminSupabase.from('pagos').insert({
+    const { data: nuevoPago, error: insertErr } = await adminSupabase.from('pagos').insert({
       alumno_id: alumnoId,
       servicio_id: servicioId,
       padre_id: alumno.padre_id ?? null,
@@ -132,7 +133,7 @@ export async function POST(req: NextRequest) {
       cupon_id: cuponId ?? null,
       paid_at: new Date().toISOString(),
       referencia: referencia ?? null,
-    })
+    }).select('id').single()
 
     if (insertErr) {
       console.error('[pagos/manual]', insertErr)
@@ -142,6 +143,13 @@ export async function POST(req: NextRequest) {
     // Incrementar usos del cupón si aplica
     if (cuponId) {
       await adminSupabase.rpc('incrementar_usos_cupon', { cupon_id: cuponId })
+    }
+
+    // Generar PDF en background (no bloquear la respuesta)
+    if (nuevoPago?.id) {
+      generateAndSaveReceipt(nuevoPago.id).catch((err) =>
+        console.error('[pagos/manual] Error generando PDF:', err)
+      )
     }
 
     return NextResponse.json({ folio, monto: paymentData.montoFinal })

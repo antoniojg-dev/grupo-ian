@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { Alumno } from '@/types'
+import { AlumnoConPago } from '@/types'
 
 const GRADOS = [
   'Kinder 1', 'Kinder 2', 'Kinder 3',
@@ -11,32 +11,29 @@ const GRADOS = [
 ]
 
 type Props = {
-  alumnos: Alumno[]
-  alumnosPagadosIds: string[]
+  alumnos: AlumnoConPago[]
 }
 
-function EstadoPago({ pagado }: { pagado: boolean }) {
-  if (pagado) {
-    return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium font-quicksand bg-green-50 text-green-700">
-        <span className="w-2 h-2 rounded-full bg-green-500" />
-        Al corriente
-      </span>
-    )
-  }
+const ESTADO_PAGO_CONFIG = {
+  pagado:   { label: 'Al corriente', dot: 'bg-green-500',  badge: 'bg-green-50 text-green-700' },
+  pendiente:{ label: 'Pendiente',    dot: 'bg-yellow-500', badge: 'bg-yellow-50 text-yellow-700' },
+  vencido:  { label: 'Vencido',      dot: 'bg-red-500',    badge: 'bg-red-50 text-red-700' },
+  sin_pago: { label: 'Sin pago',     dot: 'bg-gray-400',   badge: 'bg-gray-50 text-gray-500' },
+}
+
+function EstadoPago({ estado }: { estado: AlumnoConPago['estado_pago_mes'] }) {
+  const cfg = ESTADO_PAGO_CONFIG[estado]
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium font-quicksand bg-red-50 text-red-700">
-      <span className="w-2 h-2 rounded-full bg-red-500" />
-      Con adeudo
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium font-quicksand ${cfg.badge}`}>
+      <span className={`w-2 h-2 rounded-full ${cfg.dot}`} />
+      {cfg.label}
     </span>
   )
 }
 
-export default function AlumnosList({ alumnos, alumnosPagadosIds }: Props) {
+export default function AlumnosList({ alumnos }: Props) {
   const [search, setSearch] = useState('')
   const [gradoFiltro, setGradoFiltro] = useState('')
-
-  const pagadosSet = useMemo(() => new Set(alumnosPagadosIds), [alumnosPagadosIds])
 
   const filtrados = useMemo(() => {
     return alumnos.filter((a) => {
@@ -120,7 +117,7 @@ export default function AlumnosList({ alumnos, alumnosPagadosIds }: Props) {
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <EstadoPago pagado={pagadosSet.has(alumno.id)} />
+                    <EstadoPago estado={alumno.estado_pago_mes} />
                   </td>
                   <td className="px-4 py-3 font-quicksand text-gray-500 text-xs hidden md:table-cell">
                     {alumno.padre
