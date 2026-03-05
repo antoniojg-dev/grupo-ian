@@ -122,8 +122,9 @@ export async function generateAndSaveReceipt(pagoId: string): Promise<string> {
   }
 
   // 6. Generar PDF
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const buffer = await renderToBuffer(
-    React.createElement(ReceiptTemplate, { data: receiptData })
+    React.createElement(ReceiptTemplate, { data: receiptData }) as any
   )
 
   // 7. Subir a Supabase Storage: recibos/{padre_id}/{folio}.pdf

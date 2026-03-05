@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { CheckCircle2, Clock, AlertCircle, GraduationCap, ArrowRight, CreditCard } from 'lucide-react'
+import { CheckCircle2, Clock, AlertCircle, MinusCircle, GraduationCap, ArrowRight, CreditCard } from 'lucide-react'
 import { AlumnoConPago } from '@/types'
 
 const SEMAFORO = {
@@ -34,6 +34,14 @@ const SEMAFORO = {
     textColor: 'text-green-700',
     bgColor: 'bg-green-50',
     borderColor: 'border-green-200',
+  },
+  sin_pago: {
+    label: 'Sin pago registrado',
+    icon: MinusCircle,
+    dotColor: 'bg-gray-400',
+    textColor: 'text-gray-600',
+    bgColor: 'bg-gray-50',
+    borderColor: 'border-gray-200',
   },
 }
 

@@ -3,14 +3,23 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Settings } from 'lucide-react'
 import { logoutAction } from '@/app/dashboard/admin/actions'
 
-const NAV_LINKS = [
+type NavLink = {
+  href: string
+  label: string
+  exact?: boolean
+  emoji?: string
+  icon?: React.ReactNode
+}
+
+const NAV_LINKS: NavLink[] = [
   { href: '/dashboard/admin', label: 'Resumen', emoji: '🏠', exact: true },
   { href: '/dashboard/admin/alumnos', label: 'Alumnos', emoji: '👨‍👧' },
   { href: '/dashboard/admin/pagos', label: 'Pagos', emoji: '💳' },
   { href: '/dashboard/admin/cupones', label: 'Cupones', emoji: '🎟️' },
-  { href: '/dashboard/admin/config', label: 'Configuración', emoji: '⚙️' },
+  { href: '/dashboard/admin/config', label: 'Configuración', icon: <Settings className="w-4 h-4" /> },
 ]
 
 export default function Sidebar({ adminName }: { adminName: string }) {
@@ -43,7 +52,9 @@ export default function Sidebar({ adminName }: { adminName: string }) {
                 : 'text-white/70 hover:bg-white/8 hover:text-white'
             }`}
           >
-            <span className="text-base leading-none">{link.emoji}</span>
+            <span className="text-base leading-none flex items-center">
+                {link.icon ?? link.emoji}
+              </span>
             {link.label}
           </Link>
         ))}
