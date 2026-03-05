@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { CheckCircle2, Clock, AlertCircle, GraduationCap, ArrowRight } from 'lucide-react'
+import { CheckCircle2, Clock, AlertCircle, GraduationCap, ArrowRight, CreditCard } from 'lucide-react'
 import { AlumnoConPago } from '@/types'
 
 const SEMAFORO = {
@@ -75,12 +75,21 @@ export default function HijoCard({ alumno }: { alumno: AlumnoConPago }) {
         </div>
       )}
 
-      {/* Ver pagos */}
-      <div className="pt-1">
+      {/* Acciones */}
+      <div className="pt-1 flex flex-wrap gap-2">
+        {(estado === 'pendiente' || estado === 'vencido') && (
+          <Link
+            href="/dashboard/padre/pagos"
+            className="inline-flex items-center gap-2 font-quicksand text-sm font-semibold px-4 py-2 rounded-xl transition-opacity hover:opacity-80 text-white"
+            style={{ backgroundColor: estado === 'vencido' ? 'var(--ian-red)' : 'var(--ian-blue)' }}
+          >
+            <CreditCard className="w-4 h-4" />
+            Pagar ahora
+          </Link>
+        )}
         <Link
           href="/dashboard/padre/pagos"
-          className="inline-flex items-center gap-2 font-quicksand text-sm font-medium px-4 py-2 rounded-xl transition-colors text-white"
-          style={{ backgroundColor: 'var(--ian-blue)' }}
+          className="inline-flex items-center gap-2 font-quicksand text-sm font-medium px-4 py-2 rounded-xl transition-colors text-gray-600 border border-gray-200 hover:bg-gray-50"
         >
           Ver pagos
           <ArrowRight className="w-4 h-4" />

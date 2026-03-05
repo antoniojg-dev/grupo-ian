@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { Download } from 'lucide-react'
 import PagoStatusBadge from './PagoStatusBadge'
+import BotonPagar from './BotonPagar'
 import { Pago, AlumnoConPago } from '@/types'
 
 const MESES = [
@@ -135,14 +136,25 @@ export default function HistorialPagos({
                     {formatFecha(pago.paid_at ?? pago.created_at)}
                   </td>
                   <td className="py-3">
-                    <button
-                      disabled
-                      title="Proximamente"
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-quicksand text-xs text-gray-300 border border-gray-200 cursor-not-allowed"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      Recibo
-                    </button>
+                    {(pago.estado === 'pendiente' || pago.estado === 'vencido') &&
+                    pago.servicio_id ? (
+                      <BotonPagar
+                        alumnoId={pago.alumno_id}
+                        servicioId={pago.servicio_id}
+                        mes={pago.periodo_mes ?? undefined}
+                        anio={pago.periodo_anio ?? undefined}
+                        label="Pagar"
+                      />
+                    ) : (
+                      <button
+                        disabled
+                        title="Próximamente"
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-quicksand text-xs text-gray-300 border border-gray-200 cursor-not-allowed"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        Recibo
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

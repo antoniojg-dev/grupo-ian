@@ -43,6 +43,14 @@ export type Pago = {
   } | null
 }
 
+export type Servicio = {
+  id: string
+  nombre: string
+  tipo: 'colegiatura' | 'taller_mensual' | 'taller_dia' | 'semillas_sabiduria' | 'inscripcion'
+  precio_base: number
+  activo: boolean
+}
+
 export type Perfil = {
   id: string
   nombre: string | null

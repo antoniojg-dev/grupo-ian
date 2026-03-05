@@ -1,13 +1,22 @@
 import { createClient } from '@/lib/supabase/server'
 import { getPagos } from '@/services/pagos'
+import { getAlumnos } from '@/services/alumnos'
+import { getServicios } from '@/services/servicios'
 import PagosTable from '@/components/admin/PagosTable'
 
 export default async function PagosPage() {
   const supabase = await createClient()
 
   let pagos: import('@/types').Pago[] = []
+  let alumnos: import('@/types').Alumno[] = []
+  let servicios: import('@/types').Servicio[] = []
+
   try {
-    pagos = await getPagos(supabase)
+    ;[pagos, alumnos, servicios] = await Promise.all([
+      getPagos(supabase),
+      getAlumnos(supabase),
+      getServicios(supabase),
+    ])
   } catch {
     // Tabla no existe aún — mostrar vacío
   }
@@ -26,7 +35,7 @@ export default async function PagosPage() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm p-6">
-          <PagosTable pagos={pagos} />
+          <PagosTable pagos={pagos} alumnos={alumnos} servicios={servicios} />
         </div>
       </div>
     </main>
