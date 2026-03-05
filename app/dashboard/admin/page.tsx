@@ -11,8 +11,13 @@ export default async function DashboardAdminPage() {
     redirect("/login");
   }
 
-  const role = user.user_metadata?.role as string | undefined;
-  if (role !== "admin") {
+  // REGLA: el rol SIEMPRE se lee desde la tabla perfiles, NUNCA desde user_metadata
+  const { data: perfil } = await supabase
+    .from("perfiles")
+    .select("rol")
+    .eq("id", user.id)
+    .single();
+  if (perfil?.rol !== "admin") {
     redirect("/dashboard/padre");
   }
 

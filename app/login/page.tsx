@@ -2,8 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import Image from "next/image";
+
+const MAX_ATTEMPTS = 5;
+const LOCK_SECONDS = 3;
+
+const URL_ERRORS: Record<string, string> = {
+  link_expirado: "El link expiró. Solicita uno nuevo.",
+  link_invalido: "El link no es válido.",
+};
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,15 +21,25 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [attempts, setAttempts] = useState(0);
+  const [locked, setLocked] = useState(false);
 
   useEffect(() => {
-    if (searchParams.get("error") === "link_invalido") {
-      setError("El enlace es inválido o ha expirado. Intenta de nuevo.");
+    const urlError = searchParams.get("error");
+    if (urlError && URL_ERRORS[urlError]) {
+      setError(URL_ERRORS[urlError]);
     }
   }, [searchParams]);
 
+  function lockButton() {
+    setLocked(true);
+    setTimeout(() => setLocked(false), LOCK_SECONDS * 1000);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (locked || loading) return;
+
     setError(null);
     setLoading(true);
 
@@ -32,14 +50,33 @@ export default function LoginPage() {
     });
 
     if (authError) {
-      setError("Correo o contraseña incorrectos.");
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
+
+      if (newAttempts >= MAX_ATTEMPTS) {
+        setError(
+          "Demasiados intentos. Usa '¿Olvidaste tu contraseña?' para recuperar acceso."
+        );
+      } else {
+        setError("Credenciales incorrectas. Verifica tu email y contraseña.");
+      }
+
+      lockButton();
       setLoading(false);
       return;
     }
 
-    const role = data.user?.user_metadata?.role as string | undefined;
-    router.push(role === "admin" ? "/dashboard/admin" : "/dashboard/padre");
+    const { data: { user } } = await supabase.auth.getUser();
+    const { data: perfil } = await supabase
+      .from("perfiles")
+      .select("rol")
+      .eq("id", user!.id)
+      .single();
+    const rol = perfil?.rol ?? "padre";
+    router.push(rol === "admin" ? "/dashboard/admin" : "/dashboard/padre");
   }
+
+  const buttonDisabled = loading || locked || attempts >= MAX_ATTEMPTS;
 
   return (
     <main className="min-h-screen bg-[#FAFAF8] flex items-center justify-center px-4">
@@ -70,7 +107,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-md p-8">
+        <div className="bg-white rounded-3xl shadow-sm p-8">
           <h1
             className="font-fredoka text-2xl font-semibold text-center mb-1"
             style={{ color: "var(--ian-dark)" }}
@@ -108,12 +145,21 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block font-quicksand text-sm font-medium text-gray-700 mb-1"
-              >
-                Contraseña
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label
+                  htmlFor="password"
+                  className="block font-quicksand text-sm font-medium text-gray-700"
+                >
+                  Contraseña
+                </label>
+                <Link
+                  href="/auth/reset-password"
+                  className="font-quicksand text-xs hover:underline"
+                  style={{ color: "var(--ian-blue)" }}
+                >
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </div>
               <input
                 id="password"
                 type="password"
@@ -128,8 +174,8 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={loading}
-              className="mt-2 w-full py-3 rounded-xl font-fredoka text-base font-semibold text-white transition-opacity disabled:opacity-60"
+              disabled={buttonDisabled}
+              className="mt-2 w-full py-3 rounded-xl font-fredoka text-base font-semibold text-white transition-opacity disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
               style={{ backgroundColor: "var(--ian-red)" }}
             >
               {loading ? "Ingresando..." : "Ingresar"}
