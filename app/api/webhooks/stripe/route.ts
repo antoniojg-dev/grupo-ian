@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       const { alumnoId, servicioId, padreId, mes, anio, cuponId } = intent.metadata
 
       // Buscar el pago por stripe_payment_intent_id
-      const { data: pago } = await supabase
+      const { data: pago, error: pagoErr } = await supabase
         .from('pagos')
         .select(`
           id,
@@ -46,13 +46,13 @@ export async function POST(req: NextRequest) {
           periodo_anio,
           alumnos (nombre, apellido),
           servicios (nombre),
-          perfiles (nombre, email)
+          padre:perfiles!padre_id (nombre, email)
         `)
         .eq('stripe_payment_intent_id', intent.id)
         .single()
 
-      if (!pago) {
-        console.error('[webhook] Pago no encontrado para intent:', intent.id)
+      if (pagoErr || !pago) {
+        console.error('[webhook] Pago no encontrado para intent:', intent.id, pagoErr)
         return NextResponse.json({ received: true })
       }
 
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
       // Enviar email de confirmación en background
       const alumno = pago.alumnos as unknown as { nombre: string; apellido: string } | null
       const servicio = pago.servicios as unknown as { nombre: string } | null
-      const perfil = pago.perfiles as unknown as { nombre: string; email: string } | null
+      const perfil = pago.padre as unknown as { nombre: string; email: string } | null
       if (perfil?.email && alumno && servicio) {
         const periodoLabel = `${new Date(0, (pago.periodo_mes ?? 1) - 1).toLocaleString('es-MX', { month: 'long' })} ${pago.periodo_anio ?? new Date().getFullYear()}`
         sendConfirmacionPago({
