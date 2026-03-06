@@ -102,10 +102,14 @@ export async function POST(req: NextRequest) {
         await supabase.rpc('incrementar_usos_cupon', { cupon_id: cuponId })
       }
 
-      // Generar PDF en background (no bloquear el webhook)
-      generateAndSaveReceipt(pago.id).catch((err) =>
-        console.error('[webhook] Error generando PDF:', err)
-      )
+      // Generar PDF — await para capturar error completo
+      try {
+        console.log('[webhook] Generando PDF para pago:', pago.id)
+        await generateAndSaveReceipt(pago.id)
+        console.log('[webhook] PDF generado correctamente')
+      } catch (pdfErr) {
+        console.error('[webhook] PDF error:', pdfErr)
+      }
 
       // Enviar email de confirmación en background
       console.log('[webhook] Resend config:', {
