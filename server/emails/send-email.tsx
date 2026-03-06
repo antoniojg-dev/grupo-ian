@@ -6,7 +6,7 @@ import Bienvenida from './templates/bienvenida'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-const FROM = process.env.RESEND_FROM_EMAIL ?? 'noreply@grupoian.mx'
+const FROM = `Grupo IAN <${process.env.RESEND_FROM_EMAIL ?? 'noreply@grupoian.mx'}>`
 
 export interface ConfirmacionPagoData {
   to: string

@@ -124,8 +124,8 @@ export async function POST(req: NextRequest) {
           periodo: periodoLabel,
           montoFinal: pago.monto_final,
         })
-          .then((emailResult) => console.log('[webhook] Email enviado:', emailResult))
-          .catch((err) => console.error('[webhook] Error enviando email:', err))
+          .then((result) => console.log('[webhook] Email resultado:', JSON.stringify(result)))
+          .catch((err) => console.error('[webhook] Email error:', err.message))
       } else {
         console.warn('[webhook] Email omitido — perfil:', perfil, 'alumno:', alumno, 'servicio:', servicio)
       }
