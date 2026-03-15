@@ -1,4 +1,14 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Grupo IAN
+
+App de gestión escolar para Grupo IAN (kinder bilingüe + programa Semillas de Sabiduría).
+
+## Setup local
+
+1. Clonar repo
+2. `cp .env.example .env.local`
+3. Llenar variables en `.env.local` con valores reales
+4. `npm install`
+5. `npm run dev`
 
 ## Getting Started
 
