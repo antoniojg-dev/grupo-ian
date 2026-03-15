@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { WHATSAPP_WA_ME } from '@/config/constants'
+import { WHATSAPP_URL } from '@/config/constants'
 
 const KINDER_OPCIONES = ['Maternal', 'Nursery', 'Kinder 1', 'Kinder 2', 'Kinder 3'] as const
 const SEMILLAS_OPCIONES = ['Paquete Siembra', 'Paquete Crece', 'Paquete Florece'] as const
@@ -99,7 +99,7 @@ export default function ContactModal({
 
       const mensaje = mensajeWhatsappProp ?? buildMensajeWhatsapp(tipo, interes)
       const text = encodeURIComponent(mensaje)
-      window.location.href = `${WHATSAPP_WA_ME}?text=${text}`
+      window.location.href = `${WHATSAPP_URL}?text=${text}`
       onClose()
     } catch {
       setError('Error de conexión. Intenta de nuevo.')

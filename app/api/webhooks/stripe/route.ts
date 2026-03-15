@@ -1,16 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { stripe } from '@/lib/stripe'
 import { generateAndSaveReceipt } from '@/server/pdf/generate-receipt'
 import { sendConfirmacionPago } from '@/server/emails/send-email'
-
-// Supabase con service role para bypassear RLS en el webhook
-function createAdminClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-}
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -32,13 +24,9 @@ export async function POST(req: NextRequest) {
   const supabase = createAdminClient()
 
   try {
-    console.log('1. Evento recibido:', event.type)
-
     if (event.type === 'payment_intent.succeeded') {
       const intent = event.data.object as import('stripe').Stripe.PaymentIntent
-      const { alumnoId, servicioId, padreId, mes, anio, cuponId } = intent.metadata
-
-      console.log('2. PaymentIntent ID:', intent.id)
+      const { cuponId } = intent.metadata
 
       // Paso 1: Buscar solo el pago
       const { data: pago, error: pagoErr } = await supabase
@@ -47,10 +35,8 @@ export async function POST(req: NextRequest) {
         .eq('stripe_payment_intent_id', intent.id)
         .single()
 
-      console.log('3. Query resultado:', { pago, pagoErr })
-
       if (pagoErr || !pago) {
-        console.error('[webhook] Pago no encontrado para intent:', intent.id, pagoErr)
+        console.error('[webhook] Pago no encontrado')
         return NextResponse.json({ received: true })
       }
 
@@ -93,45 +79,34 @@ export async function POST(req: NextRequest) {
         .eq('stripe_payment_intent_id', intent.id)
         .select()
 
-      console.log('4. Update resultado:', { updateData, updateErr })
-      console.log('5. Filas actualizadas:', updateData)
-      if (updateErr) console.error('Update error:', updateErr)
-
       // Incrementar usos del cupón si aplica
       if (cuponId) {
         await supabase.rpc('incrementar_usos_cupon', { cupon_id: cuponId })
       }
 
-      // Generar PDF — await para capturar error completo
+      // Generar PDF
       try {
-        console.log('[webhook] Generando PDF para pago:', pago.id)
         await generateAndSaveReceipt(pago.id)
-        console.log('[webhook] PDF generado correctamente')
       } catch (pdfErr) {
         console.error('[webhook] PDF error:', pdfErr)
       }
 
-      // Enviar email de confirmación en background
-      console.log('[webhook] Resend config:', {
-        hasApiKey: !!process.env.RESEND_API_KEY,
-        fromEmail: process.env.RESEND_FROM_EMAIL,
-      })
-      console.log('[webhook] Intentando enviar email a:', perfil?.email)
+      // Enviar email de confirmación
       if (perfil?.email && alumno && servicio) {
         const periodoLabel = `${new Date(0, (pago.periodo_mes ?? 1) - 1).toLocaleString('es-MX', { month: 'long' })} ${pago.periodo_anio ?? new Date().getFullYear()}`
-        sendConfirmacionPago({
-          to: perfil.email,
-          nombrePadre: perfil.nombre,
-          nombreAlumno: `${alumno.nombre} ${alumno.apellido}`,
-          folio,
-          concepto: servicio.nombre,
-          periodo: periodoLabel,
-          montoFinal: pago.monto_final,
-        })
-          .then((result) => console.log('[webhook] Email resultado:', JSON.stringify(result)))
-          .catch((err) => console.error('[webhook] Email error:', err.message))
-      } else {
-        console.warn('[webhook] Email omitido — perfil:', perfil, 'alumno:', alumno, 'servicio:', servicio)
+        try {
+          await sendConfirmacionPago({
+            to: perfil.email,
+            nombrePadre: perfil.nombre,
+            nombreAlumno: `${alumno.nombre} ${alumno.apellido}`,
+            folio,
+            concepto: servicio.nombre,
+            periodo: periodoLabel,
+            montoFinal: pago.monto_final,
+          })
+        } catch (err) {
+          console.error('[webhook] Email error:', err)
+        }
       }
 
       console.log(`[webhook] Pago ${pago.id} confirmado — folio ${folio}`)

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { MessageCircle } from 'lucide-react'
+import { WHATSAPP_URL } from '@/config/constants'
 import { getAlumnosByPadre } from '@/services/alumnos'
 import HijoCard from '@/components/padre/HijoCard'
 import { AlumnoConPago } from '@/types'
@@ -48,7 +49,7 @@ export default async function DashboardPadrePage() {
             Contacta al administrador para vincular tu cuenta.
           </p>
           <a
-            href="https://wa.me/525578072426"
+            href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-quicksand text-sm font-medium text-white transition-opacity hover:opacity-80"

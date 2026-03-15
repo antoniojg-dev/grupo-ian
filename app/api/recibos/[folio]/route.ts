@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createAdminClientRaw } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { generateAndSaveReceipt } from '@/server/pdf/generate-receipt'
-
-function createAdminClient() {
-  return createAdminClientRaw(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-}
 
 export async function GET(
   _req: NextRequest,

@@ -63,24 +63,28 @@ export async function GET(request: NextRequest) {
         .update({ padre_id: user.id })
         .eq("id", alumnoId)
 
-      // Enviar email de bienvenida en background
+      // Enviar email de bienvenida (await para no fire-and-forget)
       if (user.email) {
-        const { data: perfil } = await supabase
-          .from("perfiles")
-          .select("nombre")
-          .eq("id", user.id)
-          .single()
-        const { data: alumnoData } = await supabase
-          .from("alumnos")
-          .select("nombre")
-          .eq("id", alumnoId)
-          .single()
-        sendBienvenida({
-          to: user.email,
-          nombrePadre: perfil?.nombre ?? "Padre/Madre",
-          nombreAlumno: alumnoData?.nombre ?? "tu hijo",
-          portalUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? "https://grupoian.mx"}/dashboard/padre`,
-        }).catch((err) => console.error("[auth/confirm] Error bienvenida:", err))
+        try {
+          const { data: perfil } = await supabase
+            .from("perfiles")
+            .select("nombre")
+            .eq("id", user.id)
+            .single()
+          const { data: alumnoData } = await supabase
+            .from("alumnos")
+            .select("nombre")
+            .eq("id", alumnoId)
+            .single()
+          await sendBienvenida({
+            to: user.email,
+            nombrePadre: perfil?.nombre ?? "Padre/Madre",
+            nombreAlumno: alumnoData?.nombre ?? "tu hijo",
+            portalUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? "https://grupoian.mx"}/dashboard/padre`,
+          })
+        } catch (err) {
+          console.error("[auth/confirm] Error bienvenida:", err)
+        }
       }
     }
 

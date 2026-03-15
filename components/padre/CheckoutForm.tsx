@@ -58,11 +58,8 @@ function CheckoutFormInner({
     setLoading(true)
     setError(null)
 
-    console.log('clientSecret recibido:', clientSecret)
-
     const card = elements.getElement(CardElement)
     if (!card) {
-      console.log('CardElement no encontrado')
       setLoading(false)
       return
     }
@@ -70,9 +67,6 @@ function CheckoutFormInner({
     const result = await stripe.confirmCardPayment(clientSecret, {
       payment_method: { card },
     })
-
-    console.log('Resultado confirmación:', result)
-    console.log('Error si hay:', result.error)
 
     const { error: stripeError, paymentIntent } = result
 

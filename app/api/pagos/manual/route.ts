@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { createClient as createAdminClientRaw } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { buildPaymentData } from '@/server/payments/process-payment'
 import { generateAndSaveReceipt } from '@/server/pdf/generate-receipt'
@@ -48,10 +48,7 @@ export async function POST(req: NextRequest) {
     const { alumnoId, servicioId, mes, anio, metodo, referencia, cuponCodigo } = parsed.data
 
     // Usar service role para bypassear RLS (admin registra pagos de cualquier alumno)
-    const adminSupabase = createAdminClientRaw(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    const adminSupabase = createAdminClient()
 
     // Obtener alumno
     const { data: alumno, error: alumnoErr } = await adminSupabase
@@ -146,14 +143,15 @@ export async function POST(req: NextRequest) {
       await adminSupabase.rpc('incrementar_usos_cupon', { cupon_id: cuponId })
     }
 
-    // Generar PDF en background (no bloquear la respuesta)
+    // Generar PDF y enviar email con await (no fire-and-forget)
     if (nuevoPago?.id) {
-      generateAndSaveReceipt(nuevoPago.id).catch((err) =>
+      try {
+        await generateAndSaveReceipt(nuevoPago.id)
+      } catch (err) {
         console.error('[pagos/manual] Error generando PDF:', err)
-      )
+      }
     }
 
-    // Enviar email de confirmación en background
     const { data: padreData } = await adminSupabase
       .from('perfiles')
       .select('nombre, email')
@@ -162,15 +160,19 @@ export async function POST(req: NextRequest) {
 
     if (padreData?.email) {
       const periodoLabel = `${new Date(0, mes - 1).toLocaleString('es-MX', { month: 'long' })} ${anio}`
-      sendConfirmacionPago({
-        to: padreData.email,
-        nombrePadre: padreData.nombre,
-        nombreAlumno: `${alumno.nombre} ${alumno.apellido}`,
-        folio,
-        concepto: servicio.nombre,
-        periodo: periodoLabel,
-        montoFinal: paymentData.montoFinal,
-      }).catch((err) => console.error('[pagos/manual] Error enviando email:', err))
+      try {
+        await sendConfirmacionPago({
+          to: padreData.email,
+          nombrePadre: padreData.nombre,
+          nombreAlumno: `${alumno.nombre} ${alumno.apellido}`,
+          folio,
+          concepto: servicio.nombre,
+          periodo: periodoLabel,
+          montoFinal: paymentData.montoFinal,
+        })
+      } catch (err) {
+        console.error('[pagos/manual] Error enviando email:', err)
+      }
     }
 
     return NextResponse.json({ folio, monto: paymentData.montoFinal })

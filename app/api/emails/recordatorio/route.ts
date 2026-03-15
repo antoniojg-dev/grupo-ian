@@ -1,13 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { sendRecordatorioPago } from '@/server/emails/send-email'
-
-function createAdminClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-}
 
 export async function POST(req: NextRequest) {
   // Verificar autorización del cron job
@@ -61,15 +54,18 @@ export async function POST(req: NextRequest) {
       Math.floor((now.getTime() - fechaVencimiento.getTime()) / (1000 * 60 * 60 * 24))
     )
 
-    await sendRecordatorioPago({
-      to: perfil.email,
-      nombrePadre: perfil.nombre,
-      nombreAlumno: `${alumno.nombre} ${alumno.apellido}`,
-      montoPendiente: pago.monto_final,
-      diasVencido,
-    }).catch((err) => console.error(`[recordatorio] Error enviando a ${perfil.email}:`, err))
-
-    enviados++
+    try {
+      await sendRecordatorioPago({
+        to: perfil.email,
+        nombrePadre: perfil.nombre,
+        nombreAlumno: `${alumno.nombre} ${alumno.apellido}`,
+        montoPendiente: pago.monto_final,
+        diasVencido,
+      })
+      enviados++
+    } catch (err) {
+      console.error(`[recordatorio] Error enviando a ${perfil.email}:`, err)
+    }
   }
 
   return NextResponse.json({ enviados })
