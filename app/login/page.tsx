@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { WHATSAPP_URL } from "@/config/constants";
 
 const MAX_ATTEMPTS = 5;
 const LOCK_SECONDS = 3;
@@ -185,7 +186,7 @@ function LoginForm() {
           <p className="mt-6 text-center font-quicksand text-xs text-gray-400">
             ¿Problemas para acceder?{" "}
             <a
-              href="https://wa.me/525578072426"
+              href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="underline"
