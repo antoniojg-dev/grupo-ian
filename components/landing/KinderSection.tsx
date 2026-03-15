@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   GraduationCap,
   Globe,
@@ -11,9 +11,7 @@ import {
   Gamepad2,
   Users,
 } from 'lucide-react';
-
-const WA_HREF =
-  'https://wa.me/5255780724264?text=Hola%2C%20me%20interesa%20inscribir%20a%20mi%20hijo%20en%20Grupo%20IAN';
+import ContactModal from './ContactModal';
 
 const FEATURES = [
   { icon: <Globe size={18} />,    color: 'ian-blue',   text: 'Inglés integrado desde Kinder' },
@@ -34,6 +32,7 @@ const iconBg: Record<string, string> = {
 };
 
 export default function KinderSection() {
+  const [contactOpen, setContactOpen] = useState(false);
   const imageRef     = useRef<HTMLDivElement>(null);
   const badgeRef     = useRef<HTMLDivElement>(null);
   const titleRef     = useRef<HTMLHeadingElement>(null);
@@ -171,18 +170,24 @@ export default function KinderSection() {
 
           {/* CTA */}
           <div ref={ctaRef} className="section-hidden delay-500 mt-6">
-            <a
-              href={WA_HREF}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => setContactOpen(true)}
               className="inline-flex items-center bg-ian-red text-white font-quicksand font-semibold rounded-full px-6 py-3 transition-all duration-200 hover:bg-red-700 hover:scale-[1.02]"
             >
               Inscribir a mi hijo →
-            </a>
+            </button>
           </div>
         </div>
 
       </div>
+
+      <ContactModal
+        isOpen={contactOpen}
+        onClose={() => setContactOpen(false)}
+        tipo="kinder"
+        interesInicial="Kinder 1"
+      />
     </section>
   );
 }

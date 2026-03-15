@@ -1,9 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { Brain, MapPin, Phone, Clock, MessageCircle, Heart } from 'lucide-react';
-
-const WA_URL =
-  'https://wa.me/5255780724264?text=Hola%2C%20me%20interesa%20inscribir%20a%20mi%20hijo%20en%20Grupo%20IAN';
+import ContactModal from './ContactModal';
 
 const navLinks = [
   { label: 'Inicio',    href: '#hero' },
@@ -29,6 +28,7 @@ function scrollTo(href: string) {
 }
 
 export default function Footer() {
+  const [contactOpen, setContactOpen] = useState(false);
   return (
     <footer className="bg-ian-dark text-white pt-16 pb-8 px-6">
       <div className="mx-auto max-w-6xl">
@@ -67,15 +67,14 @@ export default function Footer() {
               >
                 ig
               </a>
-              <a
-                href={WA_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => setContactOpen(true)}
                 aria-label="WhatsApp"
                 className="w-9 h-9 bg-green-500 hover:brightness-110 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200"
               >
                 wa
-              </a>
+              </button>
             </div>
           </div>
 
@@ -142,17 +141,23 @@ export default function Footer() {
               </li>
             </ul>
 
-            <a
-              href={WA_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => setContactOpen(true)}
               className="inline-flex items-center gap-2 mt-4 bg-[#25D366] text-white rounded-full px-4 py-2 text-sm font-semibold hover:brightness-110 transition-all duration-200"
             >
               <MessageCircle className="w-4 h-4" /> Escríbenos por WhatsApp
-            </a>
+            </button>
           </div>
 
         </div>
+
+        <ContactModal
+          isOpen={contactOpen}
+          onClose={() => setContactOpen(false)}
+          tipo="kinder"
+          interesInicial="Kinder 1"
+        />
 
         {/* Separador */}
         <div className="border-t border-white/5 mt-12 pt-8 flex justify-between flex-wrap gap-2 text-white/40 text-xs">

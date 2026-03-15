@@ -185,7 +185,7 @@ function LoginForm() {
           <p className="mt-6 text-center font-quicksand text-xs text-gray-400">
             ¿Problemas para acceder?{" "}
             <a
-              href="https://wa.me/5578072426"
+              href="https://wa.me/525578072426"
               target="_blank"
               rel="noopener noreferrer"
               className="underline"

@@ -48,7 +48,7 @@ export default async function DashboardPadrePage() {
             Contacta al administrador para vincular tu cuenta.
           </p>
           <a
-            href="https://wa.me/5257807242"
+            href="https://wa.me/525578072426"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-quicksand text-sm font-medium text-white transition-opacity hover:opacity-80"

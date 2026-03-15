@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { GraduationCap, Shield, Clock, Star, Waves } from 'lucide-react';
+import ContactModal from './ContactModal';
 
 const TRUST_BADGES = [
   { icon: <GraduationCap className="w-4 h-4" />, label: 'Maestros Certificados', bg: 'bg-blue-50',   color: 'text-blue-600'   },
@@ -10,14 +11,12 @@ const TRUST_BADGES = [
   { icon: <Clock        className="w-4 h-4" />, label: 'Horarios Flexibles',    bg: 'bg-orange-50', color: 'text-orange-600' },
 ];
 
-const WA_HREF =
-  'https://wa.me/5255780724264?text=Hola%2C%20me%20interesa%20inscribir%20a%20mi%20hijo%20en%20Grupo%20IAN';
-
 const VIDEO_SRC = 'https://www.youtube.com/embed/OEKBpboNyGE?autoplay=1';
 
 export default function HeroSection() {
   const [videoOpen, setVideoOpen] = useState(false);
   const [iframeSrc, setIframeSrc] = useState('');
+  const [contactOpen, setContactOpen] = useState(false);
 
   const openVideo = () => {
     setIframeSrc(VIDEO_SRC);
@@ -164,14 +163,13 @@ export default function HeroSection() {
             {/* CTAs */}
             <div ref={ctasRef} className="section-hidden delay-400 flex flex-col gap-4">
               <div className="flex flex-wrap gap-4">
-                <a
-                  href={WA_HREF}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => setContactOpen(true)}
                   className="inline-flex items-center rounded-full bg-ian-red px-6 py-3 font-quicksand font-semibold text-white transition-all duration-200 hover:scale-[1.02] hover:bg-red-700"
                 >
                   Inscribe a tu hijo →
-                </a>
+                </button>
                 <button
                   onClick={openVideo}
                   className="inline-flex items-center rounded-full border-2 border-ian-dark px-6 py-3 font-quicksand font-semibold text-ian-dark transition-all duration-200 hover:bg-ian-dark hover:text-white"
@@ -242,6 +240,13 @@ export default function HeroSection() {
 
         </div>
       </div>
+
+      <ContactModal
+        isOpen={contactOpen}
+        onClose={() => setContactOpen(false)}
+        tipo="kinder"
+        interesInicial="Kinder 1"
+      />
 
       {/* ── Video Modal ─────────────────────────────────────────── */}
       {videoOpen && (

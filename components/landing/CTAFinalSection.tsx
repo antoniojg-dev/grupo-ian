@@ -1,12 +1,11 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Rocket, MessageCircle } from 'lucide-react';
-
-const WA_URL =
-  'https://wa.me/5255780724264?text=Hola%2C%20me%20interesa%20inscribir%20a%20mi%20hijo%20en%20Grupo%20IAN';
+import ContactModal from './ContactModal';
 
 export default function CTAFinalSection() {
+  const [contactOpen, setContactOpen] = useState(false);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const subtextRef  = useRef<HTMLParagraphElement>(null);
   const buttonsRef  = useRef<HTMLDivElement>(null);
@@ -73,27 +72,32 @@ export default function CTAFinalSection() {
             ref={buttonsRef}
             className="section-hidden delay-200 flex gap-4 justify-center mt-10 flex-wrap"
           >
-            <a
-              href={WA_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => setContactOpen(true)}
               className="inline-flex items-center gap-2 bg-white text-ian-red font-quicksand font-bold rounded-full px-8 py-4 transition-all duration-200 hover:bg-gray-100 hover:scale-[1.02]"
             >
               <Rocket className="w-5 h-5" /> Inscribir a mi hijo ahora
-            </a>
+            </button>
 
-            <a
-              href={WA_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => setContactOpen(true)}
               className="inline-flex items-center gap-2 border-2 border-white text-white font-quicksand font-bold rounded-full px-8 py-4 transition-all duration-200 hover:bg-white hover:text-ian-red"
             >
               <MessageCircle className="w-5 h-5" /> Hablar por WhatsApp
-            </a>
+            </button>
           </div>
 
         </div>
       </div>
+
+      <ContactModal
+        isOpen={contactOpen}
+        onClose={() => setContactOpen(false)}
+        tipo="kinder"
+        interesInicial="Kinder 1"
+      />
     </section>
   );
 }

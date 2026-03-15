@@ -3,16 +3,13 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { BookOpen, Globe, Waves, CheckCircle2 } from 'lucide-react';
+import ContactModal from './ContactModal';
 
 const TABS = [
   { icon: <BookOpen      className="w-4 h-4 shrink-0" />, label: 'Regularización', short: 'Regularización'    },
   { icon: <Globe         className="w-4 h-4 shrink-0" />, label: 'Inglés',         short: 'Inglés'            },
   { icon: <Waves         className="w-4 h-4 shrink-0" />, label: 'Natación',       short: 'Natación'          },
 ];
-
-
-const WA_INGLES =
-  'https://wa.me/5255780724264?text=Hola%2C%20me%20interesa%20informaci%C3%B3n%20sobre%20las%20clases%20de%20ingl%C3%A9s%20en%20Grupo%20IAN';
 
 type TabData = {
   headline: string;
@@ -62,7 +59,7 @@ const TAB_DATA: TabData[] = [
     price: 'Desde $1,250 MXN/mes',
     priceLabel: 'clases extracurriculares',
     ctaLabel: 'Preguntar horarios →',
-    ctaHref: WA_INGLES,
+    ctaHref: '#',
     ctaTarget: '_blank',
     ctaColor: 'bg-ian-blue hover:bg-blue-600',
     image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=80',
@@ -91,7 +88,9 @@ const TAB_DATA: TabData[] = [
 
 export default function ServicesSection() {
   const [activeTab, setActiveTab] = useState(0);
+  const [contactOpen, setContactOpen] = useState(false);
   const tab = TAB_DATA[activeTab];
+  const isWhatsAppCta = tab.ctaTarget === '_blank';
 
   return (
     <section id="servicios" className="bg-white rounded-[40px] mx-4 my-8 py-16 px-4">
@@ -145,14 +144,22 @@ export default function ServicesSection() {
               ))}
             </ul>
 
-            <a
-              href={tab.ctaHref}
-              target={tab.ctaTarget}
-              rel={tab.ctaTarget === '_blank' ? 'noopener noreferrer' : undefined}
-              className={`self-start inline-flex items-center rounded-full ${tab.ctaColor} px-6 py-3 font-quicksand font-semibold text-white text-sm transition-all duration-200 hover:scale-[1.02]`}
-            >
-              {tab.ctaLabel}
-            </a>
+            {isWhatsAppCta ? (
+              <button
+                type="button"
+                onClick={() => setContactOpen(true)}
+                className={`self-start inline-flex items-center rounded-full ${tab.ctaColor} px-6 py-3 font-quicksand font-semibold text-white text-sm transition-all duration-200 hover:scale-[1.02]`}
+              >
+                {tab.ctaLabel}
+              </button>
+            ) : (
+              <a
+                href={tab.ctaHref}
+                className={`self-start inline-flex items-center rounded-full ${tab.ctaColor} px-6 py-3 font-quicksand font-semibold text-white text-sm transition-all duration-200 hover:scale-[1.02]`}
+              >
+                {tab.ctaLabel}
+              </a>
+            )}
           </div>
 
           {/* Right — imagen + precio flotante */}
@@ -172,6 +179,13 @@ export default function ServicesSection() {
         </div>
 
       </div>
+
+      <ContactModal
+        isOpen={contactOpen}
+        onClose={() => setContactOpen(false)}
+        tipo="kinder"
+        interesInicial="Kinder 1"
+      />
     </section>
   );
 }

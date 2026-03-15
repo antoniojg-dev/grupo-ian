@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Sprout, Brain, Leaf, Lightbulb } from 'lucide-react';
+import ContactModal from './ContactModal';
 
 type Paquete = {
   accentColor: string;
@@ -57,6 +58,8 @@ const PAQUETES: Paquete[] = [
 const CARD_DELAYS = ['delay-100', 'delay-200', 'delay-300'];
 
 export default function PaquetesSection() {
+  const [contactOpen, setContactOpen] = useState(false);
+  const [contactInteres, setContactInteres] = useState('Paquete Siembra');
   const titleRef    = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const cardRefs    = useRef<(HTMLDivElement | null)[]>([]);
@@ -111,9 +114,20 @@ export default function PaquetesSection() {
               paquete={p}
               delay={CARD_DELAYS[i]}
               ref={(el) => { cardRefs.current[i] = el; }}
+              onCtaClick={() => {
+                setContactInteres(`Paquete ${p.nombre}`);
+                setContactOpen(true);
+              }}
             />
           ))}
         </div>
+
+        <ContactModal
+          isOpen={contactOpen}
+          onClose={() => setContactOpen(false)}
+          tipo="semillas"
+          interesInicial={contactInteres}
+        />
 
         {/* Nota inferior */}
         <p className="flex flex-col items-center gap-1 text-gray-400 text-sm mt-12 text-center">
@@ -130,13 +144,8 @@ import { forwardRef } from 'react';
 
 const PaqueteCard = forwardRef<
   HTMLDivElement,
-  { paquete: Paquete; delay: string }
->(function PaqueteCard({ paquete: p, delay }, ref) {
-  const waText = encodeURIComponent(
-    `Hola, me interesa el paquete ${p.nombre} de Semillas de Sabiduría`
-  );
-  const waHref = `https://wa.me/5255780724264?text=${waText}`;
-
+  { paquete: Paquete; delay: string; onCtaClick: () => void }
+>(function PaqueteCard({ paquete: p, delay, onCtaClick }, ref) {
   return (
     <div
       ref={ref}
@@ -210,10 +219,9 @@ const PaqueteCard = forwardRef<
       </p>
 
       {/* CTA */}
-      <a
-        href={waHref}
-        target="_blank"
-        rel="noopener noreferrer"
+      <button
+        type="button"
+        onClick={onCtaClick}
         className={`w-full mt-6 py-3 rounded-2xl font-quicksand font-semibold text-sm text-center block transition-all duration-200 hover:scale-[1.02] ${
           p.popular
             ? 'text-white'
@@ -229,19 +237,19 @@ const PaqueteCard = forwardRef<
         }
         onMouseEnter={(e) => {
           if (!p.popular) {
-            (e.currentTarget as HTMLAnchorElement).style.backgroundColor = p.accentColor;
-            (e.currentTarget as HTMLAnchorElement).style.color = '#ffffff';
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = p.accentColor;
+            (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
           }
         }}
         onMouseLeave={(e) => {
           if (!p.popular) {
-            (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '';
-            (e.currentTarget as HTMLAnchorElement).style.color = p.accentColor;
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = '';
+            (e.currentTarget as HTMLButtonElement).style.color = p.accentColor;
           }
         }}
       >
         ¡Inscribirse!
-      </a>
+      </button>
     </div>
   );
 });
