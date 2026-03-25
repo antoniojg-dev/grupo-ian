@@ -3,8 +3,10 @@ import { redirect } from 'next/navigation'
 import { MessageCircle } from 'lucide-react'
 import { WHATSAPP_URL } from '@/config/constants'
 import { getAlumnosByPadre } from '@/services/alumnos'
+import { getSuscripcionesByPadre } from '@/services/semillas'
 import HijoCard from '@/components/padre/HijoCard'
-import { AlumnoConPago } from '@/types'
+import SemillasCard from '@/components/padre/SemillasCard'
+import { AlumnoConPago, SemillasSuscripcion } from '@/types'
 
 export default async function DashboardPadrePage() {
   const supabase = await createClient()
@@ -21,10 +23,23 @@ export default async function DashboardPadrePage() {
   const nombre = perfil?.nombre ?? user.email ?? 'Padre'
 
   let hijos: AlumnoConPago[] = []
+  let suscripciones: SemillasSuscripcion[] = []
+
   try {
-    hijos = await getAlumnosByPadre(supabase, user.id)
+    [hijos, suscripciones] = await Promise.all([
+      getAlumnosByPadre(supabase, user.id),
+      getSuscripcionesByPadre(supabase, user.id),
+    ])
   } catch {
-    // Tabla no existe aún — mostrar vacío
+    // Tablas no existen aún — mostrar vacío
+  }
+
+  // Mapa alumnoId → suscripción activa
+  const suscripcionMap = new Map<string, SemillasSuscripcion>()
+  for (const s of suscripciones) {
+    if (s.status === 'activa') {
+      suscripcionMap.set(s.alumno_id, s)
+    }
   }
 
   return (
@@ -62,7 +77,13 @@ export default async function DashboardPadrePage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {hijos.map((hijo) => (
-            <HijoCard key={hijo.id} alumno={hijo} />
+            <div key={hijo.id}>
+              <HijoCard alumno={hijo} />
+              <SemillasCard
+                alumno={hijo}
+                suscripcion={suscripcionMap.get(hijo.id) ?? null}
+              />
+            </div>
           ))}
         </div>
       )}

@@ -123,6 +123,45 @@ export async function POST(req: NextRequest) {
 
       console.log(`[webhook] Pago fallido para intent: ${intent.id}`)
     }
+
+    if (event.type === 'invoice.payment_succeeded') {
+      // Stripe Invoice puede tener campo `subscription` en eventos de factura de suscripción
+      const invoice = event.data.object as { subscription?: string | null }
+      const subscriptionId = invoice.subscription ?? null
+      if (subscriptionId) {
+        await supabase
+          .from('semillas_suscripciones')
+          .update({ status: 'activa', updated_at: new Date().toISOString() })
+          .eq('stripe_subscription_id', subscriptionId)
+          .eq('status', 'pago_fallido')
+        console.log(`[webhook] Semillas pago exitoso: ${subscriptionId}`)
+      }
+    }
+
+    if (event.type === 'invoice.payment_failed') {
+      const invoice = event.data.object as { subscription?: string | null }
+      const subscriptionId = invoice.subscription ?? null
+      if (subscriptionId) {
+        await supabase
+          .from('semillas_suscripciones')
+          .update({ status: 'pago_fallido', updated_at: new Date().toISOString() })
+          .eq('stripe_subscription_id', subscriptionId)
+        console.log(`[webhook] Semillas pago fallido: ${subscriptionId}`)
+      }
+    }
+
+    if (event.type === 'customer.subscription.deleted') {
+      const subscription = event.data.object as import('stripe').Stripe.Subscription
+      await supabase
+        .from('semillas_suscripciones')
+        .update({
+          status: 'cancelada',
+          fecha_cancelacion: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('stripe_subscription_id', subscription.id)
+      console.log(`[webhook] Semillas cancelada: ${subscription.id}`)
+    }
   } catch (err) {
     console.error('[webhook] Error procesando evento:', err)
   }

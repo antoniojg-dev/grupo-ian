@@ -69,3 +69,21 @@ export type KPIs = {
 export type AlumnoConPago = Alumno & {
   estado_pago_mes: 'pagado' | 'pendiente' | 'vencido' | 'sin_pago'
 }
+
+export type SemillasPaquete = 'siembra' | 'crece' | 'florece'
+export type SemillasStatus = 'activa' | 'cancelada' | 'pausada' | 'pago_fallido'
+
+export interface SemillasSuscripcion {
+  id: string
+  alumno_id: string
+  padre_id: string
+  paquete: SemillasPaquete
+  status: SemillasStatus
+  stripe_subscription_id: string
+  stripe_customer_id: string
+  precio_mensual: number
+  fecha_inicio: string
+  fecha_cancelacion: string | null
+  created_at: string
+  updated_at: string
+}

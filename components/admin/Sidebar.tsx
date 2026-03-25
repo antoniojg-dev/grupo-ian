@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Settings, Users } from 'lucide-react'
+import { Settings, Users, Sparkles } from 'lucide-react'
 import { logoutAction } from '@/app/dashboard/admin/actions'
 
 type NavLink = {
@@ -19,6 +19,7 @@ const NAV_LINKS: NavLink[] = [
   { href: '/dashboard/admin/alumnos', label: 'Alumnos', emoji: '👨‍👧' },
   { href: '/dashboard/admin/pagos', label: 'Pagos', emoji: '💳' },
   { href: '/dashboard/admin/crm', label: 'CRM', icon: <Users className="w-4 h-4" /> },
+  { href: '/dashboard/admin/semillas', label: 'Semillas', icon: <Sparkles className="w-4 h-4" /> },
   { href: '/dashboard/admin/cupones', label: 'Cupones', emoji: '🎟️' },
   { href: '/dashboard/admin/config', label: 'Configuración', icon: <Settings className="w-4 h-4" /> },
 ]
