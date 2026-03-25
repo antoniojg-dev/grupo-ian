@@ -84,9 +84,10 @@ export async function createAlumno(
   data: {
     nombre: string
     apellido: string
-    grado: string
+    grado?: string
     grupo?: string
     beca_porcentaje?: number
+    tipo?: 'interno' | 'externo'
   }
 ) {
   const { data: alumno, error } = await supabase
@@ -94,9 +95,10 @@ export async function createAlumno(
     .insert({
       nombre: data.nombre,
       apellido: data.apellido,
-      grado: data.grado,
+      grado: data.grado ?? '',
       grupo: data.grupo ?? null,
       beca_porcentaje: data.beca_porcentaje ?? 0,
+      tipo: data.tipo ?? 'interno',
       activo: true,
     })
     .select()

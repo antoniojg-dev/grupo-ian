@@ -31,18 +31,35 @@ function EstadoPago({ estado }: { estado: AlumnoConPago['estado_pago_mes'] }) {
   )
 }
 
+function TipoBadge({ tipo }: { tipo: 'interno' | 'externo' | undefined }) {
+  if (tipo === 'externo') {
+    return (
+      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium font-quicksand bg-emerald-50 text-emerald-700">
+        Semillas
+      </span>
+    )
+  }
+  return (
+    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium font-quicksand bg-blue-50 text-blue-700">
+      Kinder
+    </span>
+  )
+}
+
 export default function AlumnosList({ alumnos }: Props) {
   const [search, setSearch] = useState('')
   const [gradoFiltro, setGradoFiltro] = useState('')
+  const [tipoFiltro, setTipoFiltro] = useState<'todos' | 'interno' | 'externo'>('todos')
 
   const filtrados = useMemo(() => {
     return alumnos.filter((a) => {
       const nombre = `${a.nombre} ${a.apellido}`.toLowerCase()
       const matchSearch = !search || nombre.includes(search.toLowerCase())
       const matchGrado = !gradoFiltro || a.grado === gradoFiltro
-      return matchSearch && matchGrado
+      const matchTipo = tipoFiltro === 'todos' || (a.tipo ?? 'interno') === tipoFiltro
+      return matchSearch && matchGrado && matchTipo
     })
-  }, [alumnos, search, gradoFiltro])
+  }, [alumnos, search, gradoFiltro, tipoFiltro])
 
   return (
     <div>
@@ -65,6 +82,15 @@ export default function AlumnosList({ alumnos }: Props) {
             <option key={g} value={g}>{g}</option>
           ))}
         </select>
+        <select
+          value={tipoFiltro}
+          onChange={(e) => setTipoFiltro(e.target.value as 'todos' | 'interno' | 'externo')}
+          className="px-4 py-2 rounded-xl border border-gray-200 font-quicksand text-sm focus:outline-none focus:border-[var(--ian-blue)] transition-colors bg-white"
+        >
+          <option value="todos">Todos</option>
+          <option value="interno">Internos</option>
+          <option value="externo">Externos</option>
+        </select>
       </div>
 
       {/* Tabla */}
@@ -78,6 +104,7 @@ export default function AlumnosList({ alumnos }: Props) {
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
                 <th className="text-left px-4 py-3 font-quicksand font-semibold text-gray-600">Alumno</th>
+                <th className="text-left px-4 py-3 font-quicksand font-semibold text-gray-600">Tipo</th>
                 <th className="text-left px-4 py-3 font-quicksand font-semibold text-gray-600">Grado</th>
                 <th className="text-left px-4 py-3 font-quicksand font-semibold text-gray-600 hidden sm:table-cell">Beca</th>
                 <th className="text-left px-4 py-3 font-quicksand font-semibold text-gray-600">Estado</th>
@@ -106,7 +133,12 @@ export default function AlumnosList({ alumnos }: Props) {
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-quicksand text-gray-600">{alumno.grado}</td>
+                  <td className="px-4 py-3">
+                    <TipoBadge tipo={alumno.tipo} />
+                  </td>
+                  <td className="px-4 py-3 font-quicksand text-gray-600">
+                    {alumno.tipo === 'externo' ? <span className="text-gray-400 text-xs">—</span> : alumno.grado}
+                  </td>
                   <td className="px-4 py-3 font-quicksand text-gray-600 hidden sm:table-cell">
                     {alumno.beca_porcentaje > 0 ? (
                       <span className="px-2 py-0.5 rounded-lg bg-purple-50 text-purple-700 text-xs font-medium">
@@ -117,7 +149,10 @@ export default function AlumnosList({ alumnos }: Props) {
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <EstadoPago estado={alumno.estado_pago_mes} />
+                    {alumno.tipo === 'externo'
+                      ? <span className="text-gray-400 text-xs font-quicksand">—</span>
+                      : <EstadoPago estado={alumno.estado_pago_mes} />
+                    }
                   </td>
                   <td className="px-4 py-3 font-quicksand text-gray-500 text-xs hidden md:table-cell">
                     {alumno.padre

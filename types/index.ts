@@ -4,6 +4,7 @@ export type Alumno = {
   apellido: string
   grado: string
   grupo: string | null
+  tipo: 'interno' | 'externo'
   beca_porcentaje: number
   activo: boolean
   padre_id: string | null

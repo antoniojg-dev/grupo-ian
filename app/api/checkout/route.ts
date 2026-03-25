@@ -63,6 +63,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Alumno no encontrado' }, { status: 404 })
     }
 
+    // Alumnos externos no pueden pagar colegiatura
+    if (alumno.tipo === 'externo') {
+      return NextResponse.json(
+        { error: 'Alumnos externos no pueden pagar colegiatura' },
+        { status: 400 }
+      )
+    }
+
     // Obtener servicio
     const { data: servicio, error: servicioErr } = await supabase
       .from('servicios')

@@ -21,6 +21,7 @@ export default function AlumnoForm() {
   const [alumno, setAlumno] = useState({
     nombre: '',
     apellido: '',
+    tipo: 'interno' as 'interno' | 'externo',
     grado: '',
     grupo: 'A',
     beca_porcentaje: 0,
@@ -35,7 +36,7 @@ export default function AlumnoForm() {
   function validarPaso1() {
     if (!alumno.nombre.trim()) return 'El nombre es requerido'
     if (!alumno.apellido.trim()) return 'El apellido es requerido'
-    if (!alumno.grado) return 'El grado es requerido'
+    if (alumno.tipo === 'interno' && !alumno.grado) return 'El grado es requerido'
     if (alumno.beca_porcentaje < 0 || alumno.beca_porcentaje > 100) return 'La beca debe estar entre 0 y 100'
     return null
   }
@@ -68,8 +69,9 @@ export default function AlumnoForm() {
       const nuevoAlumno = await createAlumnoAction({
         nombre: alumno.nombre.trim(),
         apellido: alumno.apellido.trim(),
-        grado: alumno.grado,
-        grupo: alumno.grupo,
+        tipo: alumno.tipo,
+        grado: alumno.tipo === 'interno' ? alumno.grado : '',
+        grupo: alumno.tipo === 'interno' ? alumno.grupo : undefined,
         beca_porcentaje: alumno.beca_porcentaje,
       })
 
@@ -122,6 +124,34 @@ export default function AlumnoForm() {
       {/* Paso 1 */}
       {step === 1 && (
         <div className="space-y-4">
+          {/* Tipo de alumno */}
+          <div>
+            <label className="block font-quicksand text-sm font-medium text-gray-700 mb-2">
+              Tipo de alumno <span className="text-red-500">*</span>
+            </label>
+            <div className="flex gap-3">
+              {(['interno', 'externo'] as const).map((tipo) => (
+                <button
+                  key={tipo}
+                  type="button"
+                  onClick={() => setAlumno({ ...alumno, tipo, grado: '' })}
+                  className={`flex-1 py-2.5 px-4 rounded-xl border-2 font-quicksand text-sm font-medium transition-all ${
+                    alumno.tipo === tipo
+                      ? 'border-[var(--ian-blue)] text-[var(--ian-blue)] bg-blue-50'
+                      : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                  }`}
+                >
+                  {tipo === 'interno' ? '🏫 Interno (kinder)' : '🌱 Externo (solo Semillas)'}
+                </button>
+              ))}
+            </div>
+            {alumno.tipo === 'externo' && (
+              <p className="mt-2 text-xs font-quicksand text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-lg">
+                Este alumno solo tendrá acceso a Semillas de Sabiduría.
+              </p>
+            )}
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block font-quicksand text-sm font-medium text-gray-700 mb-1.5">
@@ -149,51 +179,56 @@ export default function AlumnoForm() {
             </div>
           </div>
 
-          <div>
-            <label className="block font-quicksand text-sm font-medium text-gray-700 mb-1.5">
-              Grado <span className="text-red-500">*</span>
-            </label>
-            <select
-              value={alumno.grado}
-              onChange={(e) => setAlumno({ ...alumno, grado: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 font-quicksand text-sm focus:outline-none focus:border-[var(--ian-blue)] bg-white"
-            >
-              <option value="">Seleccionar grado...</option>
-              {GRADOS.map((g) => (
-                <option key={g} value={g}>{g}</option>
-              ))}
-            </select>
-          </div>
+          {/* Grado y grupo: solo internos */}
+          {alumno.tipo === 'interno' && (
+            <>
+              <div>
+                <label className="block font-quicksand text-sm font-medium text-gray-700 mb-1.5">
+                  Grado <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={alumno.grado}
+                  onChange={(e) => setAlumno({ ...alumno, grado: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 font-quicksand text-sm focus:outline-none focus:border-[var(--ian-blue)] bg-white"
+                >
+                  <option value="">Seleccionar grado...</option>
+                  {GRADOS.map((g) => (
+                    <option key={g} value={g}>{g}</option>
+                  ))}
+                </select>
+              </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block font-quicksand text-sm font-medium text-gray-700 mb-1.5">
-                Grupo
-              </label>
-              <select
-                value={alumno.grupo}
-                onChange={(e) => setAlumno({ ...alumno, grupo: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 font-quicksand text-sm focus:outline-none focus:border-[var(--ian-blue)] bg-white"
-              >
-                {GRUPOS.map((g) => (
-                  <option key={g} value={g}>{g}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block font-quicksand text-sm font-medium text-gray-700 mb-1.5">
-                Beca %
-              </label>
-              <input
-                type="number"
-                min={0}
-                max={100}
-                value={alumno.beca_porcentaje}
-                onChange={(e) => setAlumno({ ...alumno, beca_porcentaje: Number(e.target.value) })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 font-quicksand text-sm focus:outline-none focus:border-[var(--ian-blue)] focus:ring-1 focus:ring-[var(--ian-blue)]"
-              />
-            </div>
-          </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-quicksand text-sm font-medium text-gray-700 mb-1.5">
+                    Grupo
+                  </label>
+                  <select
+                    value={alumno.grupo}
+                    onChange={(e) => setAlumno({ ...alumno, grupo: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 font-quicksand text-sm focus:outline-none focus:border-[var(--ian-blue)] bg-white"
+                  >
+                    {GRUPOS.map((g) => (
+                      <option key={g} value={g}>{g}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-quicksand text-sm font-medium text-gray-700 mb-1.5">
+                    Beca %
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={alumno.beca_porcentaje}
+                    onChange={(e) => setAlumno({ ...alumno, beca_porcentaje: Number(e.target.value) })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 font-quicksand text-sm focus:outline-none focus:border-[var(--ian-blue)] focus:ring-1 focus:ring-[var(--ian-blue)]"
+                  />
+                </div>
+              </div>
+            </>
+          )}
 
           <button
             type="button"

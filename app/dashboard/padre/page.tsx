@@ -76,15 +76,37 @@ export default async function DashboardPadrePage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {hijos.map((hijo) => (
-            <div key={hijo.id}>
-              <HijoCard alumno={hijo} />
-              <SemillasCard
-                alumno={hijo}
-                suscripcion={suscripcionMap.get(hijo.id) ?? null}
-              />
-            </div>
-          ))}
+          {hijos.map((hijo) => {
+            const esExterno = hijo.tipo === 'externo'
+            return (
+              <div key={hijo.id}>
+                {esExterno ? (
+                  /* Alumno externo: solo Semillas, sin colegiatura */
+                  <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+                    <h3 className="font-fredoka text-xl font-semibold mb-1" style={{ color: 'var(--ian-dark)' }}>
+                      {hijo.nombre} {hijo.apellido}
+                    </h3>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium font-quicksand bg-emerald-50 text-emerald-700 mb-3">
+                      Solo Semillas
+                    </span>
+                    <SemillasCard
+                      alumno={hijo}
+                      suscripcion={suscripcionMap.get(hijo.id) ?? null}
+                    />
+                  </div>
+                ) : (
+                  /* Alumno interno: colegiatura + Semillas */
+                  <>
+                    <HijoCard alumno={hijo} />
+                    <SemillasCard
+                      alumno={hijo}
+                      suscripcion={suscripcionMap.get(hijo.id) ?? null}
+                    />
+                  </>
+                )}
+              </div>
+            )
+          })}
         </div>
       )}
     </div>

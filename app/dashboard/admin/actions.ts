@@ -8,9 +8,10 @@ import { redirect } from 'next/navigation'
 export async function createAlumnoAction(data: {
   nombre: string
   apellido: string
-  grado: string
+  grado?: string
   grupo?: string
   beca_porcentaje?: number
+  tipo?: 'interno' | 'externo'
 }) {
   const supabase = await createClient()
   const alumno = await createAlumno(supabase, data)
