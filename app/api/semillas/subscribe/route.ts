@@ -62,6 +62,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Precio del plan
+    console.log('SEMILLAS_PRICES:', SEMILLAS_PRICES)
+    console.log('paquete recibido:', paquete)
     const priceId = SEMILLAS_PRICES[paquete as SemillasPaquete]
     if (!priceId) {
       return NextResponse.json({ error: 'Paquete inválido o no configurado' }, { status: 400 })
