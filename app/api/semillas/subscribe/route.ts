@@ -144,8 +144,9 @@ export async function POST(req: NextRequest) {
       subscriptionId: subscription.id,
       clientSecret: paymentIntent.client_secret,
     })
-  } catch (err) {
-    console.error('[semillas/subscribe]', err)
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
+  } catch (error) {
+    console.error('[semillas] Error completo:', error)
+    console.error('[semillas] Error message:', error instanceof Error ? error.message : String(error))
+    return Response.json({ error: 'Error interno' }, { status: 500 })
   }
 }
