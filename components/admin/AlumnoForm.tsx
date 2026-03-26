@@ -12,7 +12,15 @@ const GRADOS = [
 
 const GRUPOS = ['A', 'B', 'C']
 
-export default function AlumnoForm() {
+function formatMXN(centavos: number) {
+  return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(centavos / 100)
+}
+
+type Props = {
+  precioInscripcion: number // centavos
+}
+
+export default function AlumnoForm({ precioInscripcion }: Props) {
   const router = useRouter()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -27,6 +35,11 @@ export default function AlumnoForm() {
     beca_porcentaje: 0,
   })
 
+  const [cobrarInscripcion, setCobrarInscripcion] = useState(true)
+  const [descuentoInscripcion, setDescuentoInscripcion] = useState(0)
+
+  const totalInscripcion = Math.round(precioInscripcion * (1 - Math.min(100, Math.max(0, descuentoInscripcion)) / 100))
+
   const [padre, setPadre] = useState({
     email: '',
     nombre: '',
@@ -38,6 +51,7 @@ export default function AlumnoForm() {
     if (!alumno.apellido.trim()) return 'El apellido es requerido'
     if (alumno.tipo === 'interno' && !alumno.grado) return 'El grado es requerido'
     if (alumno.beca_porcentaje < 0 || alumno.beca_porcentaje > 100) return 'La beca debe estar entre 0 y 100'
+    if (alumno.tipo === 'interno' && descuentoInscripcion < 0 || descuentoInscripcion > 100) return 'El descuento de inscripción debe estar entre 0 y 100'
     return null
   }
 
@@ -73,6 +87,8 @@ export default function AlumnoForm() {
         grado: alumno.tipo === 'interno' ? alumno.grado : '',
         grupo: alumno.tipo === 'interno' ? alumno.grupo : undefined,
         beca_porcentaje: alumno.beca_porcentaje,
+        cobrarInscripcion: alumno.tipo === 'interno' ? cobrarInscripcion : false,
+        descuentoInscripcion: alumno.tipo === 'interno' ? descuentoInscripcion : 0,
       })
 
       await invitarPadreAction(
@@ -179,7 +195,7 @@ export default function AlumnoForm() {
             </div>
           </div>
 
-          {/* Grado y grupo: solo internos */}
+          {/* Grado, grupo, beca e inscripción: solo internos */}
           {alumno.tipo === 'interno' && (
             <>
               <div>
@@ -226,6 +242,68 @@ export default function AlumnoForm() {
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 font-quicksand text-sm focus:outline-none focus:border-[var(--ian-blue)] focus:ring-1 focus:ring-[var(--ian-blue)]"
                   />
                 </div>
+              </div>
+
+              {/* Inscripción */}
+              <div className="border-t border-gray-100 pt-4">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-quicksand text-sm font-medium text-gray-700">Inscripción</span>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <span className="font-quicksand text-xs text-gray-500">¿Cobrar inscripción?</span>
+                    <button
+                      type="button"
+                      onClick={() => setCobrarInscripcion(!cobrarInscripcion)}
+                      className={`relative w-10 h-5 rounded-full transition-colors flex-shrink-0 ${
+                        cobrarInscripcion ? 'bg-[var(--ian-blue)]' : 'bg-gray-200'
+                      }`}
+                      aria-checked={cobrarInscripcion}
+                      role="switch"
+                    >
+                      <span
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
+                          cobrarInscripcion ? 'translate-x-5' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </label>
+                </div>
+
+                {cobrarInscripcion ? (
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="font-quicksand text-xs text-gray-500">Precio base</span>
+                      <span className="font-quicksand text-xs font-medium text-gray-700">
+                        {formatMXN(precioInscripcion)}
+                      </span>
+                    </div>
+                    <div>
+                      <label className="block font-quicksand text-xs font-medium text-gray-600 mb-1">
+                        Descuento inscripción %
+                      </label>
+                      <input
+                        type="number"
+                        min={0}
+                        max={100}
+                        value={descuentoInscripcion}
+                        onChange={(e) => setDescuentoInscripcion(Number(e.target.value))}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 font-quicksand text-sm focus:outline-none focus:border-[var(--ian-blue)] focus:ring-1 focus:ring-[var(--ian-blue)]"
+                      />
+                    </div>
+                    <div className="flex justify-between items-center px-4 py-2.5 rounded-xl bg-blue-50 border border-blue-100">
+                      <span className="font-quicksand text-xs text-blue-700 font-medium">Total a pagar:</span>
+                      <span className="font-quicksand text-sm font-semibold text-blue-800">
+                        {formatMXN(totalInscripcion)}
+                      </span>
+                    </div>
+                    <p className="font-quicksand text-xs text-gray-400">
+                      Se generará un cobro pendiente de inscripción para este alumno
+                    </p>
+                  </div>
+                ) : (
+                  <p className="font-quicksand text-xs text-gray-500 bg-gray-50 px-3 py-2.5 rounded-xl border border-gray-100">
+                    No se generará cobro de inscripción para este alumno
+                  </p>
+                )}
               </div>
             </>
           )}

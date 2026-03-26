@@ -160,13 +160,21 @@ export default function AlumnosList({ alumnos }: Props) {
                       : <span className="text-orange-500">Sin asignar</span>}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link
-                      href={`/dashboard/admin/alumnos/${alumno.id}`}
-                      className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium font-quicksand text-white transition-opacity hover:opacity-80"
-                      style={{ backgroundColor: 'var(--ian-blue)' }}
-                    >
-                      Ver
-                    </Link>
+                    <div className="inline-flex items-center gap-2">
+                      <Link
+                        href={`/dashboard/admin/alumnos/${alumno.id}/editar`}
+                        className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium font-quicksand text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors"
+                      >
+                        Editar
+                      </Link>
+                      <Link
+                        href={`/dashboard/admin/alumnos/${alumno.id}`}
+                        className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium font-quicksand text-white transition-opacity hover:opacity-80"
+                        style={{ backgroundColor: 'var(--ian-blue)' }}
+                      >
+                        Ver
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))}
