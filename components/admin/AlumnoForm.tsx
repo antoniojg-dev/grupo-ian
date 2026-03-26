@@ -5,9 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createAlumnoAction, invitarPadreAction } from '@/app/dashboard/admin/actions'
 
 const GRADOS = [
-  'Kinder 1', 'Kinder 2', 'Kinder 3',
-  '1° Primaria', '2° Primaria', '3° Primaria',
-  '4° Primaria', '5° Primaria', '6° Primaria',
+  'Preprimaria', 'Kinder 1', 'Kinder 2', 'Kinder 3',
 ]
 
 const GRUPOS = ['A', 'B', 'C']

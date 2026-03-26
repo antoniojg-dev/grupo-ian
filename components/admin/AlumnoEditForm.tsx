@@ -5,9 +5,7 @@ import { updateAlumnoFullAction } from '@/app/dashboard/admin/actions'
 import { Alumno } from '@/types'
 
 const GRADOS = [
-  'Kinder 1', 'Kinder 2', 'Kinder 3',
-  '1° Primaria', '2° Primaria', '3° Primaria',
-  '4° Primaria', '5° Primaria', '6° Primaria',
+  'Preprimaria', 'Kinder 1', 'Kinder 2', 'Kinder 3',
 ]
 
 const GRUPOS = ['A', 'B', 'C']
